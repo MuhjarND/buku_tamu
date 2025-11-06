@@ -22,12 +22,13 @@ class GuestController extends Controller
      */
     public function index()
     {
-        // Ambil daftar pegawai yang aktif
+        // Ambil daftar pegawai yang aktif dengan status kehadiran
         $employees = DB::table('users')
             ->where('role', 'employee')
             ->where('is_active', true)
+            ->orderBy('position_order', 'asc')
             ->orderBy('name', 'asc')
-            ->get(['id', 'name']);
+            ->get(['id', 'name', 'position', 'presence_status']);
 
         return view('guest.register', compact('employees'));
     }

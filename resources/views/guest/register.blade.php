@@ -66,6 +66,14 @@
             border: 2px solid #e0e0e0 !important;
             min-height: 48px !important;
         }
+        .select2-results__option[data-status="keluar"] {
+            background-color: #fff3cd !important;
+            color: #856404 !important;
+        }
+        .select2-results__option[data-status="ada"] {
+            background-color: #d1e7dd !important;
+            color: #0f5132 !important;
+        }
     </style>
 </head>
 <body>
@@ -76,6 +84,9 @@
                     <div class="card-header text-center">
                         <h2 class="mb-0"><i class="fas fa-clipboard-user me-2"></i>Buku Tamu Digital</h2>
                         <p class="mb-0 mt-2">Silakan isi data Anda dengan lengkap</p>
+                        <a href="{{ route('employees.list') }}" class="btn btn-sm btn-light mt-2" style="border-radius: 20px;">
+                            <i class="fas fa-users me-1"></i>Lihat Daftar Pegawai
+                        </a>
                     </div>
                     <div class="card-body p-4">
                         @if(session('error'))
@@ -139,8 +150,13 @@
                                         id="employee-select" multiple="multiple" required>
                                     @foreach($employees as $employee)
                                         <option value="{{ $employee->id }}" 
+                                                data-status="{{ $employee->presence_status }}"
+                                                data-position="{{ $employee->position }}"
                                                 {{ in_array($employee->id, old('employee_ids', [])) ? 'selected' : '' }}>
-                                            {{ $employee->name }}
+                                            {{ $employee->name }} - {{ $employee->position }} 
+                                            @if($employee->presence_status == 'keluar')
+                                                (Sedang Keluar)
+                                            @endif
                                         </option>
                                     @endforeach
                                 </select>
@@ -217,8 +233,33 @@
             $('#employee-select').select2({
                 theme: 'bootstrap-5',
                 placeholder: 'Pilih pegawai yang ingin ditemui',
-                allowClear: true
+                allowClear: true,
+                templateResult: formatEmployee,
+                templateSelection: formatEmployeeSelection
             });
+
+            // Format tampilan dropdown
+            function formatEmployee(employee) {
+                if (!employee.id) return employee.text;
+                
+                const $employee = $(employee.element);
+                const status = $employee.data('status');
+                const position = $employee.data('position');
+                
+                let badge = '';
+                if (status === 'keluar') {
+                    badge = '<span class="badge bg-warning ms-2">Sedang Keluar</span>';
+                } else {
+                    badge = '<span class="badge bg-success ms-2">Ada</span>';
+                }
+                
+                return $(`<div>${employee.text} ${badge}</div>`);
+            }
+
+            // Format tampilan selected item
+            function formatEmployeeSelection(employee) {
+                return employee.text;
+            }
 
             let stream = null;
             const cameraModal = new bootstrap.Modal(document.getElementById('cameraModal'));

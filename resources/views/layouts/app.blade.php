@@ -217,6 +217,9 @@
                 <a href="{{ route('receptionist.guests.index') }}" class="menu-item {{ request()->routeIs('receptionist.guests.*') ? 'active' : '' }}">
                     <i class="fas fa-clipboard-check"></i> Verifikasi Tamu
                 </a>
+                <a href="{{ route('receptionist.presence.status') }}" class="menu-item {{ request()->routeIs('receptionist.presence.*') ? 'active' : '' }}">
+                    <i class="fas fa-user-check"></i> Status Kehadiran
+                </a>
             @elseif(Auth::user()->role === 'employee')
                 <a href="{{ route('employee.guests.index') }}" class="menu-item {{ request()->routeIs('employee.guests.*') ? 'active' : '' }}">
                     <i class="fas fa-calendar-check"></i> Tamu Saya

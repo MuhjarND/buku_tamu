@@ -172,6 +172,58 @@ class ReceptionistController extends Controller
     }
 
     /**
+     * Tampilkan halaman status kehadiran pegawai
+     */
+    public function presenceStatus()
+    {
+        $employees = DB::table('users')
+            ->where('role', 'employee')
+            ->where('is_active', true)
+            ->orderBy('position_order', 'asc')
+            ->orderBy('name', 'asc')
+            ->get();
+
+        return view('receptionist.presence-status', compact('employees'));
+    }
+
+    /**
+     * Update status kehadiran pegawai
+     */
+    public function updatePresenceStatus(Request $request, $id)
+    {
+        try {
+            $status = $request->input('status');
+
+            if (!in_array($status, ['ada', 'keluar'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Status tidak valid',
+                ], 400);
+            }
+
+            DB::table('users')
+                ->where('id', $id)
+                ->where('role', 'employee')
+                ->update([
+                    'presence_status' => $status,
+                    'presence_updated_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status kehadiran berhasil diperbarui',
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
      * Tolak tamu
      */
     public function reject($id, Request $request)

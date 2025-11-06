@@ -16,6 +16,10 @@ Route::get('/guest/checkout', 'GuestController@checkoutPage')->name('guest.check
 Route::post('/guest/checkout-by-phone', 'GuestController@checkoutByPhone')->name('guest.checkout.by-phone');
 Route::post('/guest/checkout/{id}', 'GuestController@checkout')->name('guest.checkout');
 
+// Halaman daftar pegawai publik
+Route::get('/employees', 'EmployeeListController@index')->name('employees.list');
+Route::get('/employees/status', 'EmployeeListController@getStatus')->name('employees.status');
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes - Authentication
@@ -47,6 +51,10 @@ Route::middleware(['auth'])->group(function() {
         Route::get('/guest/{id}', 'ReceptionistController@show')->name('guest.show');
         Route::post('/guest/{id}/verify', 'ReceptionistController@verify')->name('guest.verify');
         Route::post('/guest/{id}/reject', 'ReceptionistController@reject')->name('guest.reject');
+        
+        // Status Kehadiran Pegawai
+        Route::get('/presence-status', 'ReceptionistController@presenceStatus')->name('presence.status');
+        Route::post('/employee/{id}/presence-status', 'ReceptionistController@updatePresenceStatus')->name('employee.presence.update');
     });
     
     /*
@@ -66,22 +74,22 @@ Route::middleware(['auth'])->group(function() {
     | Admin Routes
     |--------------------------------------------------------------------------
     */
-Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function() {
-    // User Management
-    Route::get('/users', 'Admin\UserController@index')->name('users.index');
-    Route::get('/users/create', 'Admin\UserController@create')->name('users.create');
-    Route::post('/users', 'Admin\UserController@store')->name('users.store');
-    Route::get('/users/{id}/edit', 'Admin\UserController@edit')->name('users.edit');
-    Route::put('/users/{id}', 'Admin\UserController@update')->name('users.update');
-    Route::delete('/users/{id}', 'Admin\UserController@destroy')->name('users.destroy');
-    
-    // Guest Management
-    Route::get('/guests', 'Admin\GuestController@index')->name('guests.index');
-    Route::get('/guest/{id}', 'Admin\GuestController@show')->name('guest.show');
-    Route::delete('/guest/{id}', 'Admin\GuestController@destroy')->name('guest.destroy');
-    
-    // Reports
-    Route::get('/reports', 'Admin\ReportController@index')->name('reports.index');
-    Route::get('/reports/export', 'Admin\ReportController@export')->name('reports.export');
-});
+    Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function() {
+        // User Management
+        Route::get('/users', 'Admin\UserController@index')->name('users.index');
+        Route::get('/users/create', 'Admin\UserController@create')->name('users.create');
+        Route::post('/users', 'Admin\UserController@store')->name('users.store');
+        Route::get('/users/{id}/edit', 'Admin\UserController@edit')->name('users.edit');
+        Route::put('/users/{id}', 'Admin\UserController@update')->name('users.update');
+        Route::delete('/users/{id}', 'Admin\UserController@destroy')->name('users.destroy');
+        
+        // Guest History
+        Route::get('/guests', 'Admin\GuestController@index')->name('guests.index');
+        Route::get('/guest/{id}', 'Admin\GuestController@show')->name('guest.show');
+        Route::delete('/guest/{id}', 'Admin\GuestController@destroy')->name('guest.destroy');
+        
+        // Reports
+        Route::get('/reports', 'Admin\ReportController@index')->name('reports.index');
+        Route::get('/reports/export', 'Admin\ReportController@export')->name('reports.export');
+    });
 });

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -69,6 +70,9 @@ class UserController extends Controller
             'phone' => 'required|string|max:20',
             'password' => 'required|string|min:6|confirmed',
             'role' => 'required|in:admin,receptionist,employee',
+            'position' => 'nullable|string|max:255',
+            'position_order' => 'nullable|integer',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'is_active' => 'required|boolean',
         ], [
             'name.required' => 'Nama harus diisi',
@@ -80,6 +84,9 @@ class UserController extends Controller
             'password.min' => 'Password minimal 6 karakter',
             'password.confirmed' => 'Konfirmasi password tidak cocok',
             'role.required' => 'Role harus dipilih',
+            'photo.image' => 'File harus berupa gambar',
+            'photo.mimes' => 'Format gambar harus jpeg, png, atau jpg',
+            'photo.max' => 'Ukuran gambar maksimal 2MB',
         ]);
 
         if ($validator->fails()) {
@@ -90,12 +97,24 @@ class UserController extends Controller
 
         DB::beginTransaction();
         try {
+            // Upload foto jika ada
+            $photoPath = null;
+            if ($request->hasFile('photo')) {
+                $photo = $request->file('photo');
+                $photoName = time() . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
+                $photoPath = $photo->storeAs('user_photos', $photoName, 'public');
+            }
+
             DB::table('users')->insert([
                 'name' => $request->name,
                 'email' => $request->email,
                 'phone' => $request->phone,
+                'photo' => $photoPath,
                 'password' => Hash::make($request->password),
                 'role' => $request->role,
+                'position' => $request->position,
+                'position_order' => $request->position_order ?? 999,
+                'presence_status' => 'ada',
                 'is_active' => $request->is_active,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -108,6 +127,11 @@ class UserController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
+            
+            // Hapus foto jika ada error
+            if ($photoPath) {
+                Storage::disk('public')->delete($photoPath);
+            }
             
             return redirect()->back()
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
@@ -148,6 +172,9 @@ class UserController extends Controller
             'phone' => 'required|string|max:20',
             'password' => 'nullable|string|min:6|confirmed',
             'role' => 'required|in:admin,receptionist,employee',
+            'position' => 'nullable|string|max:255',
+            'position_order' => 'nullable|integer',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'is_active' => 'required|boolean',
         ], [
             'name.required' => 'Nama harus diisi',
@@ -158,6 +185,9 @@ class UserController extends Controller
             'password.min' => 'Password minimal 6 karakter',
             'password.confirmed' => 'Konfirmasi password tidak cocok',
             'role.required' => 'Role harus dipilih',
+            'photo.image' => 'File harus berupa gambar',
+            'photo.mimes' => 'Format gambar harus jpeg, png, atau jpg',
+            'photo.max' => 'Ukuran gambar maksimal 2MB',
         ]);
 
         if ($validator->fails()) {
@@ -173,9 +203,24 @@ class UserController extends Controller
                 'email' => $request->email,
                 'phone' => $request->phone,
                 'role' => $request->role,
+                'position' => $request->position,
+                'position_order' => $request->position_order ?? 999,
                 'is_active' => $request->is_active,
                 'updated_at' => now(),
             ];
+
+            // Upload foto baru jika ada
+            if ($request->hasFile('photo')) {
+                // Hapus foto lama
+                if ($user->photo) {
+                    Storage::disk('public')->delete($user->photo);
+                }
+
+                $photo = $request->file('photo');
+                $photoName = time() . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
+                $photoPath = $photo->storeAs('user_photos', $photoName, 'public');
+                $updateData['photo'] = $photoPath;
+            }
 
             // Update password jika diisi
             if ($request->filled('password')) {
@@ -222,6 +267,11 @@ class UserController extends Controller
                     'success' => false,
                     'message' => 'Anda tidak bisa menghapus akun sendiri',
                 ], 400);
+            }
+
+            // Hapus foto jika ada
+            if ($user->photo) {
+                Storage::disk('public')->delete($user->photo);
             }
 
             // Hapus relasi guest_employees jika user adalah employee

@@ -17,7 +17,7 @@
                     </a>
                 </div>
 
-                <form action="{{ route('admin.users.store') }}" method="POST">
+                <form action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="mb-3">
@@ -27,6 +27,18 @@
                         @error('name')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Foto Profil</label>
+                        <input type="file" name="photo" id="photo" class="form-control @error('photo') is-invalid @enderror" accept="image/*">
+                        @error('photo')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="text-muted">Format: JPG, PNG. Maksimal 2MB</small>
+                        <div class="mt-2" id="preview-container" style="display: none;">
+                            <img id="photo-preview" src="" style="max-width: 200px; border-radius: 10px;">
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -65,7 +77,7 @@
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Role <span class="text-danger">*</span></label>
-                        <select name="role" class="form-select @error('role') is-invalid @enderror" required>
+                        <select name="role" class="form-select @error('role') is-invalid @enderror" id="role-select" required>
                             <option value="">Pilih Role</option>
                             <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                             <option value="receptionist" {{ old('role') == 'receptionist' ? 'selected' : '' }}>Resepsionis</option>
@@ -74,6 +86,29 @@
                         @error('role')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                    </div>
+
+                    <div id="employee-fields" style="display: none;">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Jabatan</label>
+                            <select name="position" class="form-select" id="position-select">
+                                <option value="">Pilih Jabatan</option>
+                                <option value="Pimpinan">Pimpinan</option>
+                                <option value="Hakim Tinggi">Hakim Tinggi</option>
+                                <option value="Panitera">Panitera</option>
+                                <option value="Sekretaris">Sekretaris</option>
+                                <option value="Panitera Muda">Panitera Muda</option>
+                                <option value="Kepala Bagian">Kepala Bagian</option>
+                                <option value="Panitera Pengganti">Panitera Pengganti</option>
+                                <option value="Kepala Sub Bagian">Kepala Sub Bagian</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Urutan Jabatan</label>
+                            <input type="number" name="position_order" class="form-control" min="1" max="999" value="999">
+                            <small class="text-muted">1=Paling atas, 999=Paling bawah</small>
+                        </div>
                     </div>
 
                     <div class="mb-4">
@@ -111,3 +146,45 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+// Preview foto
+document.getElementById('photo').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('photo-preview').src = e.target.result;
+            document.getElementById('preview-container').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Toggle employee fields
+document.getElementById('role-select').addEventListener('change', function() {
+    const employeeFields = document.getElementById('employee-fields');
+    if (this.value === 'employee') {
+        employeeFields.style.display = 'block';
+    } else {
+        employeeFields.style.display = 'none';
+    }
+});
+
+// Auto set position_order based on position
+document.getElementById('position-select').addEventListener('change', function() {
+    const orderMap = {
+        'Pimpinan': 1,
+        'Hakim Tinggi': 2,
+        'Panitera': 3,
+        'Sekretaris': 3,
+        'Panitera Muda': 4,
+        'Kepala Bagian': 5,
+        'Panitera Pengganti': 6,
+        'Kepala Sub Bagian': 7
+    };
+    document.querySelector('input[name="position_order"]').value = orderMap[this.value] || 999;
+});
+</script>
+@endpush

@@ -139,7 +139,9 @@ class WhatsAppService
     {
         $message = "*Terima Kasih Atas Kunjungan Anda*\n\n";
         $message .= "Halo {$guestName},\n\n";
-        $message .= "Terima kasih telah berkunjung. Checkout Anda telah berhasil dicatat.\n";
+        $message .= "Terima kasih telah berkunjung. Checkout Anda telah berhasil dicatat.\n\n";
+        $message .= "Kami sangat menghargai kunjungan Anda. Mohon bantu kami untuk meningkatkan pelayanan dengan mengisi survey kepuasan:\n\n";
+        $message .= "🔗 Survey: s.id/surveyrokap\n\n";
         $message .= "Sampai jumpa lagi!";
 
         return $this->sendMessage($guestPhone, $message);
