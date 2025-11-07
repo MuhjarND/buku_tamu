@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1B4332 0%, #1e3a8a 50%, #B8860B 100%);
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
@@ -20,13 +20,13 @@
             border: none;
         }
         .card-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1B4332 0%, #1e3a8a 50%, #B8860B 100%);
             color: white;
             border-radius: 20px 20px 0 0 !important;
             padding: 2rem;
         }
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1B4332 0%, #1e3a8a 50%, #B8860B 100%);
             border: none;
             padding: 12px 30px;
             border-radius: 10px;

@@ -88,27 +88,19 @@
                         @enderror
                     </div>
 
-                    <div id="employee-fields" style="display: none;">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Jabatan</label>
-                            <select name="position" class="form-select" id="position-select">
-                                <option value="">Pilih Jabatan</option>
-                                <option value="Pimpinan">Pimpinan</option>
-                                <option value="Hakim Tinggi">Hakim Tinggi</option>
-                                <option value="Panitera">Panitera</option>
-                                <option value="Sekretaris">Sekretaris</option>
-                                <option value="Panitera Muda">Panitera Muda</option>
-                                <option value="Kepala Bagian">Kepala Bagian</option>
-                                <option value="Panitera Pengganti">Panitera Pengganti</option>
-                                <option value="Kepala Sub Bagian">Kepala Sub Bagian</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Urutan Jabatan</label>
-                            <input type="number" name="position_order" class="form-control" min="1" max="999" value="999">
-                            <small class="text-muted">1=Paling atas, 999=Paling bawah</small>
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Jabatan</label>
+                        <select name="position" class="form-select" id="position-select">
+                            <option value="">Pilih Jabatan</option>
+                            @php
+                                $positions = DB::table('positions')->where('is_active', true)->orderBy('order')->get();
+                            @endphp
+                            @foreach($positions as $pos)
+                                <option value="{{ $pos->name }}" data-order="{{ $pos->order }}">
+                                    {{ $pos->name }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
 
                     <div class="mb-4">
@@ -174,17 +166,9 @@ document.getElementById('role-select').addEventListener('change', function() {
 
 // Auto set position_order based on position
 document.getElementById('position-select').addEventListener('change', function() {
-    const orderMap = {
-        'Pimpinan': 1,
-        'Hakim Tinggi': 2,
-        'Panitera': 3,
-        'Sekretaris': 3,
-        'Panitera Muda': 4,
-        'Kepala Bagian': 5,
-        'Panitera Pengganti': 6,
-        'Kepala Sub Bagian': 7
-    };
-    document.querySelector('input[name="position_order"]').value = orderMap[this.value] || 999;
+    const selectedOption = this.options[this.selectedIndex];
+    const order = selectedOption.getAttribute('data-order');
+    document.querySelector('input[name="position_order"]').value = order || 999;
 });
 </script>
 @endpush

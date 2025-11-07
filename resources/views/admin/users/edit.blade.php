@@ -104,21 +104,15 @@
                             <label class="form-label fw-bold">Jabatan</label>
                             <select name="position" class="form-select" id="position-select">
                                 <option value="">Pilih Jabatan</option>
-                                <option value="Pimpinan" {{ old('position', $user->position) == 'Pimpinan' ? 'selected' : '' }}>Pimpinan</option>
-                                <option value="Hakim Tinggi" {{ old('position', $user->position) == 'Hakim Tinggi' ? 'selected' : '' }}>Hakim Tinggi</option>
-                                <option value="Panitera" {{ old('position', $user->position) == 'Panitera' ? 'selected' : '' }}>Panitera</option>
-                                <option value="Sekretaris" {{ old('position', $user->position) == 'Sekretaris' ? 'selected' : '' }}>Sekretaris</option>
-                                <option value="Panitera Muda" {{ old('position', $user->position) == 'Panitera Muda' ? 'selected' : '' }}>Panitera Muda</option>
-                                <option value="Kepala Bagian" {{ old('position', $user->position) == 'Kepala Bagian' ? 'selected' : '' }}>Kepala Bagian</option>
-                                <option value="Panitera Pengganti" {{ old('position', $user->position) == 'Panitera Pengganti' ? 'selected' : '' }}>Panitera Pengganti</option>
-                                <option value="Kepala Sub Bagian" {{ old('position', $user->position) == 'Kepala Sub Bagian' ? 'selected' : '' }}>Kepala Sub Bagian</option>
+                                @php
+                                    $positions = DB::table('positions')->where('is_active', true)->orderBy('order')->get();
+                                @endphp
+                                @foreach($positions as $pos)
+                                    <option value="{{ $pos->name }}" data-order="{{ $pos->order }}">
+                                        {{ $pos->name }}
+                                    </option>
+                                @endforeach
                             </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Urutan Jabatan</label>
-                            <input type="number" name="position_order" class="form-control" min="1" max="999" value="{{ old('position_order', $user->position_order ?? 999) }}">
-                            <small class="text-muted">1=Paling atas, 999=Paling bawah</small>
                         </div>
                     </div>
 
@@ -185,17 +179,9 @@ document.getElementById('role-select').addEventListener('change', function() {
 
 // Auto set position_order based on position
 document.getElementById('position-select').addEventListener('change', function() {
-    const orderMap = {
-        'Pimpinan': 1,
-        'Hakim Tinggi': 2,
-        'Panitera': 3,
-        'Sekretaris': 3,
-        'Panitera Muda': 4,
-        'Kepala Bagian': 5,
-        'Panitera Pengganti': 6,
-        'Kepala Sub Bagian': 7
-    };
-    document.querySelector('input[name="position_order"]').value = orderMap[this.value] || 999;
+    const selectedOption = this.options[this.selectedIndex];
+    const order = selectedOption.getAttribute('data-order');
+    document.querySelector('input[name="position_order"]').value = order || 999;
 });
 </script>
 @endpush

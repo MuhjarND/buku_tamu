@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1B4332 0%, #1e3a8a 50%, #B8860B 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -23,7 +23,7 @@
         .checkout-icon {
             width: 100px;
             height: 100px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1B4332 0%, #1e3a8a 50%, #B8860B 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -31,7 +31,7 @@
             margin: 0 auto 2rem;
         }
         .btn-checkout {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1B4332 0%, #1e3a8a 50%, #B8860B 100%);
             border: none;
             padding: 12px 40px;
             border-radius: 10px;

@@ -91,5 +91,13 @@ Route::middleware(['auth'])->group(function() {
         // Reports
         Route::get('/reports', 'Admin\ReportController@index')->name('reports.index');
         Route::get('/reports/export', 'Admin\ReportController@export')->name('reports.export');
-    });
+
+        //Position
+        Route::get('/positions', 'Admin\PositionController@index')->name('positions.index');
+        Route::get('/positions/create', 'Admin\PositionController@create')->name('positions.create');
+        Route::post('/positions', 'Admin\PositionController@store')->name('positions.store');
+        Route::get('/positions/{id}/edit', 'Admin\PositionController@edit')->name('positions.edit');
+        Route::put('/positions/{id}', 'Admin\PositionController@update')->name('positions.update');
+        Route::delete('/positions/{id}', 'Admin\PositionController@destroy')->name('positions.destroy');
+        });
 });

@@ -123,6 +123,7 @@
                     <th>Nama</th>
                     <th>Email</th>
                     <th>Telepon</th>
+                    <th>Jabatan</th>
                     <th>Role</th>
                     <th>Status</th>
                     <th>Dibuat</th>
@@ -135,10 +136,16 @@
                         <td>{{ $users->firstItem() + $loop->index }}</td>
                         <td>
                             <div class="d-flex align-items-center">
-                                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" 
-                                     class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-2">
-                                    {{ strtoupper(substr($user->name, 0, 1)) }}
-                                </div>
+                                @if($user->photo)
+                                    <img src="{{ asset('storage/' . $user->photo) }}" 
+                                         class="rounded-circle me-2" 
+                                         style="width: 50px; height: 50px; object-fit: cover;">
+                                @else
+                                    <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" 
+                                         class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-2">
+                                        {{ strtoupper(substr($user->name, 0, 1)) }}
+                                    </div>
+                                @endif
                                 <div>
                                     <div class="fw-bold">{{ $user->name }}</div>
                                     @if($user->id == auth()->id())
@@ -149,6 +156,13 @@
                         </td>
                         <td>{{ $user->email }}</td>
                         <td>{{ $user->phone }}</td>
+                        <td>
+                            @if($user->role == 'employee' && $user->position)
+                                <span class="badge bg-info">{{ $user->position }}</span>
+                            @else
+                                <span class="text-muted">-</span>
+                            @endif
+                        </td>
                         <td>
                             @if($user->role == 'admin')
                                 <span class="badge bg-danger">
@@ -195,7 +209,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8" class="text-center py-4">
+                        <td colspan="9" class="text-center py-4">
                             <i class="fas fa-inbox fa-3x text-muted mb-3 d-block"></i>
                             <p class="text-muted">Tidak ada data user</p>
                         </td>

@@ -210,6 +210,11 @@
                 <a href="{{ route('admin.users.index') }}" class="menu-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
                     <i class="fas fa-user-cog"></i> Kelola User
                 </a>
+
+                <a href="{{ route('admin.positions.index') }}" class="menu-item">
+                    <i class="fas fa-briefcase"></i> Kelola Jabatan
+                </a>
+
                 <a href="{{ route('admin.reports.index') }}" class="menu-item {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
                     <i class="fas fa-chart-bar"></i> Laporan
                 </a>
