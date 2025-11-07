@@ -72,6 +72,7 @@ class UserController extends Controller
             'role' => 'required|in:admin,receptionist,employee',
             'position' => 'nullable|string|max:255',
             'position_order' => 'nullable|integer',
+            'keterangan' => 'nullable|string|max:255',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'is_active' => 'required|boolean',
         ], [
@@ -114,6 +115,7 @@ class UserController extends Controller
                 'role' => $request->role,
                 'position' => $request->position,
                 'position_order' => $request->position_order ?? 999,
+                'keterangan' => $request->keterangan,
                 'presence_status' => 'ada',
                 'is_active' => $request->is_active,
                 'created_at' => now(),
@@ -174,6 +176,7 @@ class UserController extends Controller
             'role' => 'required|in:admin,receptionist,employee',
             'position' => 'nullable|string|max:255',
             'position_order' => 'nullable|integer',
+            'keterangan' => 'nullable|string|max:255',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'is_active' => 'required|boolean',
         ], [
@@ -205,6 +208,7 @@ class UserController extends Controller
                 'role' => $request->role,
                 'position' => $request->position,
                 'position_order' => $request->position_order ?? 999,
+                'keterangan' => $request->keterangan,
                 'is_active' => $request->is_active,
                 'updated_at' => now(),
             ];

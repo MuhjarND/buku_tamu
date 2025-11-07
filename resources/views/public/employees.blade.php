@@ -734,7 +734,7 @@
     <!-- Last Update -->
     <div class="last-update-modern" id="last-update">
         <i class="fas fa-sync-alt me-2"></i>
-        Terakhir diperbarui: {{ now()->format('d M Y, H:i') }} WIB
+        Terakhir diperbarui: {{ now()->format('d M Y, H:i') }} WIT
     </div>
 
     <!-- Content Section -->
@@ -771,7 +771,11 @@
                             </div>
 
                             <div class="employee-name">{{ $employee->name }}</div>
-                            <div class="employee-position">{{ $employee->position ?? 'Pegawai' }}</div>
+                            @if($employee->keterangan)
+                                <div class="employee-position">{{ $employee->keterangan }}</div>
+                            @else
+                                <div class="employee-position">{{ $employee->position ?? 'Pegawai' }}</div>
+                            @endif
 
                             <div class="status-container" data-status="{{ $employee->presence_status }}">
                                 @if($employee->presence_status == 'ada')

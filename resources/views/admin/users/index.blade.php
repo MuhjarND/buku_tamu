@@ -158,7 +158,12 @@
                         <td>{{ $user->phone }}</td>
                         <td>
                             @if($user->role == 'employee' && $user->position)
-                                <span class="badge bg-info">{{ $user->position }}</span>
+                                <div>
+                                    <span class="badge bg-info">{{ $user->position }}</span>
+                                    @if($user->keterangan)
+                                        <br><small class="text-muted">{{ $user->keterangan }}</small>
+                                    @endif
+                                </div>
                             @else
                                 <span class="text-muted">-</span>
                             @endif

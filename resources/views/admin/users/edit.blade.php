@@ -114,6 +114,17 @@
                                 @endforeach
                             </select>
                         </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Keterangan</label>
+                            <input type="text" name="keterangan" class="form-control @error('keterangan') is-invalid @enderror" 
+                                value="{{ old('keterangan', $user->keterangan) }}" placeholder="Contoh: Ketua Majelis, Wakil Ketua, dll">
+                            @error('keterangan')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="text-muted">Keterangan tambahan yang akan ditampilkan di halaman publik</small>
+                        </div>
+
                     </div>
 
                     <div class="mb-4">
