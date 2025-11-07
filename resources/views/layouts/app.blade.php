@@ -11,7 +11,7 @@
     
     <style>
         :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-gradient: linear-gradient(135deg, #1B4332 0%, #1e3a8a 50%, #B8860B 100%);
             --sidebar-width: 260px;
         }
         

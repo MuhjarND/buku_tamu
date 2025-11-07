@@ -43,7 +43,7 @@
                         <td>{{ $index + 1 }}</td>
                         <td>
                             <div class="d-flex align-items-center">
-                                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" 
+                                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #1B4332 0%, #1e3a8a 50%, #B8860B 100%);" 
                                      class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-2">
                                     {{ strtoupper(substr($employee->name, 0, 1)) }}
                                 </div>

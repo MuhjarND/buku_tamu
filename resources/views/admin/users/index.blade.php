@@ -141,7 +141,7 @@
                                          class="rounded-circle me-2" 
                                          style="width: 50px; height: 50px; object-fit: cover;">
                                 @else
-                                    <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" 
+                                    <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #1B4332 0%, #1e3a8a 50%, #B8860B 100%);" 
                                          class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-2">
                                         {{ strtoupper(substr($user->name, 0, 1)) }}
                                     </div>

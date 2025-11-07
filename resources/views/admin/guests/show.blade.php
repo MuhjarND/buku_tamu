@@ -14,7 +14,7 @@
                          class="rounded-circle mb-3" width="150" height="150" 
                          style="object-fit: cover;">
                 @else
-                    <div style="width: 150px; height: 150px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" 
+                    <div style="width: 150px; height: 150px; background: linear-gradient(135deg, #1B4332 0%, #1e3a8a 50%, #B8860B 100%);" 
                          class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold fs-1 mx-auto mb-3">
                         {{ strtoupper(substr($guest->name, 0, 1)) }}
                     </div>
@@ -123,7 +123,7 @@
                     @foreach($employees as $employee)
                         <div class="col-md-6">
                             <div class="d-flex align-items-center p-3 border rounded">
-                                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" 
+                                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #1B4332 0%, #1e3a8a 50%, #B8860B 100%);" 
                                      class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-3">
                                     {{ strtoupper(substr($employee->name, 0, 1)) }}
                                 </div>

@@ -144,7 +144,7 @@
                             @if($guest->photo)
                                 <img src="{{ asset('storage/' . $guest->photo) }}" class="rounded" width="40" height="40" style="object-fit: cover;">
                             @else
-                                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" 
+                                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #1B4332 0%, #1e3a8a 50%, #B8860B 100%);" 
                                      class="rounded d-flex align-items-center justify-content-center text-white fw-bold">
                                     {{ strtoupper(substr($guest->name, 0, 1)) }}
                                 </div>
