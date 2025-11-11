@@ -109,13 +109,15 @@ class WhatsAppService
      */
     public function sendEmployeeNotification($guest, $employeePhone, $employeeName)
     {
+        $verifyUrl = url("employee/guest/{$guest->id}");
+
         $message = "*Anda Memiliki Tamu*\n\n";
         $message .= "Nama Tamu: {$guest->name}\n";
         $message .= "Telepon: {$guest->phone}\n";
         $message .= "Perusahaan: " . ($guest->company ?? '-') . "\n";
         $message .= "Keperluan: {$guest->purpose}\n";
-        $message .= "Klik untuk melihat .\n";
-        $message .= "Tamu telah diverifikasi dan menunggu Anda.\n\n";
+        $message .= "*Tamu telah diverifikasi dan menunggu Anda.*\n";
+        $message .= "Tautan untuk melihat. \n{$verifyUrl}\n\n"; 
         $message .= "*- Buku Tamu PTA Papua Barat*";
 
         return $this->sendMessage($employeePhone, $message);
