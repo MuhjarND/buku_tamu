@@ -656,7 +656,7 @@
     <div class="modern-header">
         <div class="header-content">
             <div class="logo-section">
-                <h1><i class="fas fa-users-cog me-2"></i>Daftar Pegawai</h1>
+                <h1><i class="fas fa-users-cog me-2"></i>Daftar Pejabat PTA Papua Barat</h1>
                 <p>Status Kehadiran Real-time</p>
             </div>
             <div class="header-actions">

@@ -258,7 +258,8 @@ class ReceptionistController extends Controller
                 $message .= "Halo {$guest->name},\n\n";
                 $message .= "Mohon maaf, data Anda tidak dapat diverifikasi.\n";
                 $message .= "Alasan: {$reason}\n\n";
-                $message .= "Silakan daftar kembali dengan data yang valid.";
+                $message .= "Silakan daftar kembali dengan data yang valid.\n\n";
+                $message .= "*- Buku Tamu PTA Papua Barat*";
                 
                 $this->whatsappService->sendMessage($guest->phone, $message);
             }

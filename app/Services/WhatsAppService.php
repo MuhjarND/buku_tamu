@@ -91,14 +91,15 @@ class WhatsAppService
      */
     public function sendVerificationNotification($guest, $receptionistPhone)
     {
-        $verifyUrl = url("/receptionist/guest/{$guest->id}/verify");
+        $verifyUrl = url("/receptionist/guest/{$guest->id}");
         
         $message = "*Tamu Baru Memerlukan Verifikasi*\n\n";
         $message .= "Nama: {$guest->name}\n";
         $message .= "Telepon: {$guest->phone}\n";
         $message .= "Perusahaan: " . ($guest->company ?? '-') . "\n";
         $message .= "Keperluan: {$guest->purpose}\n\n";
-        $message .= "Silakan verifikasi tamu:\n{$verifyUrl}";
+        $message .= "Silakan verifikasi tamu:\n{$verifyUrl}\n\n";
+        $message .= "*- Buku Tamu PTA Papua Barat*";
 
         return $this->sendMessage($receptionistPhone, $message);
     }
@@ -112,8 +113,10 @@ class WhatsAppService
         $message .= "Nama Tamu: {$guest->name}\n";
         $message .= "Telepon: {$guest->phone}\n";
         $message .= "Perusahaan: " . ($guest->company ?? '-') . "\n";
-        $message .= "Keperluan: {$guest->purpose}\n\n";
-        $message .= "Tamu telah diverifikasi dan menunggu Anda.";
+        $message .= "Keperluan: {$guest->purpose}\n";
+        $message .= "Klik untuk melihat .\n";
+        $message .= "Tamu telah diverifikasi dan menunggu Anda.\n\n";
+        $message .= "*- Buku Tamu PTA Papua Barat*";
 
         return $this->sendMessage($employeePhone, $message);
     }
@@ -127,7 +130,8 @@ class WhatsAppService
         $message .= "Terima kasih telah menunggu.\n";
         $message .= "Pegawai yang Anda tuju akan segera menemui Anda:\n";
         $message .= "- " . implode("\n- ", $employeeNames) . "\n\n";
-        $message .= "Mohon menunggu di area resepsionis.";
+        $message .= "Mohon menunggu di area resepsionis.\n\n";
+        $message .= "*- Buku Tamu PTA Papua Barat*";
 
         return $this->sendMessage($guestPhone, $message);
     }
@@ -142,7 +146,8 @@ class WhatsAppService
         $message .= "Terima kasih telah berkunjung. Checkout Anda telah berhasil dicatat.\n\n";
         $message .= "Kami sangat menghargai kunjungan Anda. Mohon bantu kami untuk meningkatkan pelayanan dengan mengisi survey kepuasan:\n\n";
         $message .= "🔗 Survey: s.id/surveyrokap\n\n";
-        $message .= "Sampai jumpa lagi!";
+        $message .= "Sampai jumpa lagi!\n\n";
+        $message .= "*- Buku Tamu PTA Papua Barat*";
 
         return $this->sendMessage($guestPhone, $message);
     }

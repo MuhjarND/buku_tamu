@@ -16,11 +16,11 @@ class EmployeeListController extends Controller
             'Pimpinan' => 1,
             'Hakim Tinggi' => 2,
             'Sekretaris' => 3,
-            'Panitera' => 3, // Sejajar dengan Sekretaris - akan digabung
+            'Panitera' => 3, // Digabung dengan Sekretaris
             'Kepala Bagian' => 4,
             'Panitera Muda' => 5,
-            'Panitera Pengganti' => 6,
-            'Kepala Sub Bagian' => 7,
+            'Kepala Sub Bagian' => 6,
+            'Panitera Pengganti' => 7,
         ];
     }
 
@@ -56,7 +56,6 @@ class EmployeeListController extends Controller
         }
 
         $allEmployees = $query
-            ->orderBy('position_order', 'asc')
             ->orderBy('name', 'asc')
             ->get();
 
@@ -66,31 +65,41 @@ class EmployeeListController extends Controller
         // Urutan kustom jabatan
         $positionOrder = $this->getPositionOrder();
         
-        // Gabungkan Sekretaris & Panitera
+        // Gabungkan HANYA Sekretaris & Panitera
         $mergedGroups = collect();
         $sekretarisPaniteraEmployees = collect();
-        $sekretarisPaniteraDescription = '';
+        $sekretarisPaniteraDescriptions = [];
 
         foreach ($employeesByPosition as $position => $employees) {
-            // Cek apakah Sekretaris atau Panitera
-            if (stripos($position, 'Sekretaris') !== false || stripos($position, 'Panitera') !== false) {
-                // Gabungkan ke satu group
+            // Deteksi Sekretaris dan Panitera (bukan Panitera Muda/Pengganti)
+            $normalizedPosition = strtolower(trim($position));
+            
+            // Cek apakah ini Sekretaris ATAU Panitera murni (bukan turunannya)
+            $isSekretaris = (stripos($normalizedPosition, 'sekretaris') !== false) && 
+                           (stripos($normalizedPosition, 'sub') === false);
+            
+            $isPaniteraMurni = (stripos($normalizedPosition, 'panitera') !== false) && 
+                              (stripos($normalizedPosition, 'muda') === false) && 
+                              (stripos($normalizedPosition, 'pengganti') === false);
+            
+            if ($isSekretaris || $isPaniteraMurni) {
+                // Gabungkan Sekretaris & Panitera
                 $sekretarisPaniteraEmployees = $sekretarisPaniteraEmployees->merge($employees);
                 
-                // Ambil deskripsi dari tabel positions
-                if (empty($sekretarisPaniteraDescription)) {
-                    $positionData = $publicPositions->firstWhere('name', $position);
-                    if ($positionData && $positionData->description) {
-                        $sekretarisPaniteraDescription = $positionData->description;
-                    }
+                // Kumpulkan deskripsi
+                $positionData = $publicPositions->firstWhere('name', $position);
+                if ($positionData && $positionData->description) {
+                    $sekretarisPaniteraDescriptions[] = $positionData->description;
                 }
             } else {
                 // Group lainnya tetap terpisah
                 $positionData = $publicPositions->firstWhere('name', $position);
+                $order = $this->getOrderForPosition($position, $positionOrder, $employees);
+                
                 $mergedGroups->put($position, [
                     'employees' => $employees,
                     'description' => $positionData->description ?? null,
-                    'order' => $this->getOrderForPosition($position, $positionOrder, $employees)
+                    'order' => $order
                 ]);
             }
         }
@@ -99,8 +108,10 @@ class EmployeeListController extends Controller
         if ($sekretarisPaniteraEmployees->isNotEmpty()) {
             $mergedGroups->put('Sekretaris & Panitera', [
                 'employees' => $sekretarisPaniteraEmployees,
-                'description' => $sekretarisPaniteraDescription,
-                'order' => 3 // Order untuk Sekretaris & Panitera
+                'description' => !empty($sekretarisPaniteraDescriptions) 
+                    ? implode(' | ', array_unique($sekretarisPaniteraDescriptions)) 
+                    : null,
+                'order' => 3
             ]);
         }
 
@@ -143,14 +154,33 @@ class EmployeeListController extends Controller
      */
     private function getOrderForPosition($position, $positionOrder, $employees)
     {
-        // Cari urutan dari mapping kustom
+        $normalizedPosition = strtolower(trim($position));
+        
+        // Matching dengan prioritas tinggi untuk menghindari false positive
         foreach ($positionOrder as $key => $order) {
-            if (stripos($position, $key) !== false || stripos($key, $position) !== false) {
+            $normalizedKey = strtolower($key);
+            
+            // Exact match dulu
+            if ($normalizedPosition === $normalizedKey) {
                 return $order;
             }
+            
+            // Partial match dengan validasi
+            if (stripos($normalizedPosition, $normalizedKey) !== false) {
+                // Khusus untuk Panitera, pastikan bukan Panitera Muda/Pengganti
+                if ($normalizedKey === 'panitera') {
+                    if (stripos($normalizedPosition, 'muda') === false && 
+                        stripos($normalizedPosition, 'pengganti') === false) {
+                        return $order;
+                    }
+                } else {
+                    return $order;
+                }
+            }
         }
-        // Jika tidak ada di mapping, gunakan order dari database atau 999
-        return $employees->min('position_order') ?? 999;
+        
+        // Default jika tidak ketemu
+        return 999;
     }
 
     /**
@@ -169,7 +199,6 @@ class EmployeeListController extends Controller
             ->where('role', 'employee')
             ->where('is_active', true)
             ->whereIn('position', $publicPositions)
-            ->orderBy('position_order', 'asc')
             ->orderBy('name', 'asc')
             ->get(['id', 'name', 'position', 'presence_status', 'presence_updated_at']);
 
