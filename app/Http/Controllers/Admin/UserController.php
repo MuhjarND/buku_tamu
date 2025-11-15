@@ -20,7 +20,8 @@ class UserController extends Controller
         $search = $request->get('search');
 
         $query = DB::table('users')
-            ->orderBy('created_at', 'desc');
+            ->orderByRaw('COALESCE(position_order, 999) ASC')
+            ->orderBy('name', 'asc');
 
         // Filter berdasarkan role
         if ($role && $role !== 'all') {

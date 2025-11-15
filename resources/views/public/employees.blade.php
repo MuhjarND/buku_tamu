@@ -688,7 +688,7 @@
                     <i class="fas fa-user-check"></i>
                 </div>
                 <div class="stat-number">{{ $statistics['ada'] }}</div>
-                <div class="stat-label">Sedang Ada</div>
+                <div class="stat-label">Ada</div>
             </div>
 
             <div class="stat-card-modern">
@@ -696,7 +696,7 @@
                     <i class="fas fa-user-times"></i>
                 </div>
                 <div class="stat-number">{{ $statistics['keluar'] }}</div>
-                <div class="stat-label">Sedang Keluar</div>
+                <div class="stat-label">Keluar</div>
             </div>
         </div>
 
@@ -781,12 +781,12 @@
                                 @if($employee->presence_status == 'ada')
                                     <div class="status-badge-modern status-ada">
                                         <i class="fas fa-check-circle pulse"></i>
-                                        <span>Sedang Ada</span>
+                                        <span>Ada</span>
                                     </div>
                                 @else
                                     <div class="status-badge-modern status-keluar">
                                         <i class="fas fa-times-circle pulse"></i>
-                                        <span>Sedang Keluar</span>
+                                        <span>Keluar</span>
                                     </div>
                                 @endif
                             </div>
@@ -842,8 +842,8 @@
                             
                             if (statusContainer.data('status') !== employee.presence_status) {
                                 const newBadge = employee.presence_status === 'ada'
-                                    ? '<div class="status-badge-modern status-ada"><i class="fas fa-check-circle pulse"></i><span>Sedang Ada</span></div>'
-                                    : '<div class="status-badge-modern status-keluar"><i class="fas fa-times-circle pulse"></i><span>Sedang Keluar</span></div>';
+                                    ? '<div class="status-badge-modern status-ada"><i class="fas fa-check-circle pulse"></i><span>Ada</span></div>'
+                                    : '<div class="status-badge-modern status-keluar"><i class="fas fa-times-circle pulse"></i><span>Keluar</span></div>';
                                 
                                 statusContainer.html(newBadge);
                                 statusContainer.data('status', employee.presence_status);

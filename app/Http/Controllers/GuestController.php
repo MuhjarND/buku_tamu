@@ -105,7 +105,7 @@ class GuestController extends Controller
             // Ambil data tamu yang baru disimpan
             $guest = DB::table('guests')->where('id', $guestId)->first();
 
-            // Kirim notifikasi ke resepsionis
+            // Kirim notifikasi ke PTSP
             $receptionist = DB::table('users')
                 ->where('role', 'receptionist')
                 ->where('is_active', true)
@@ -118,7 +118,7 @@ class GuestController extends Controller
             DB::commit();
 
             return redirect()->route('guest.success')
-                ->with('success', 'Data Anda telah berhasil disimpan. Mohon menunggu verifikasi dari resepsionis.');
+                ->with('success', 'Data Anda telah berhasil disimpan. Mohon menunggu verifikasi dari PTSP.');
 
         } catch (\Exception $e) {
             DB::rollBack();

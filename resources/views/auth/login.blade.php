@@ -166,7 +166,7 @@
                         <h6 class="fw-bold mb-3"><i class="fas fa-info-circle me-2"></i>Akun Demo</h6>
                         <small class="text-muted">
                             <strong>Admin:</strong> admin@example.com / password<br>
-                            <strong>Resepsionis:</strong> receptionist@example.com / password<br>
+                            <strong>PTSP:</strong> receptionist@example.com / password<br>
                             <strong>Pegawai:</strong> budi@example.com / password
                         </small>
                     </div>

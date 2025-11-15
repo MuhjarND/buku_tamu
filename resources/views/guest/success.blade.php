@@ -79,11 +79,11 @@
                         </p>
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>
-                            Resepsionis akan segera memverifikasi data Anda. Anda akan menerima notifikasi WhatsApp setelah verifikasi selesai.
+                            PTSP akan segera memverifikasi data Anda. Anda akan menerima notifikasi WhatsApp setelah verifikasi selesai.
                         </div>
                         <p class="text-muted mb-4">
                             <i class="fas fa-hourglass-half me-2"></i>
-                            Mohon menunggu di area resepsionis
+                            Mohon menunggu di area PTSP
                         </p>
                         <a href="{{ route('guest.index') }}" class="btn btn-home btn-lg mb-2">
                             <i class="fas fa-home me-2"></i>Kembali ke Beranda

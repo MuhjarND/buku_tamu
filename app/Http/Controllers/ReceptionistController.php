@@ -254,11 +254,13 @@ class ReceptionistController extends Controller
 
             // Kirim notifikasi penolakan ke tamu
             if ($guest->phone) {
-                $message = "*Verifikasi Ditolak*\n\n";
-                $message .= "Halo {$guest->name},\n\n";
-                $message .= "Mohon maaf, data Anda tidak dapat diverifikasi.\n";
+                $message = "Assalamualaikum warahmatullahi wabarakatuh,\n\n";
+                $message .= "*Verifikasi Ditolak*\n\n";
+                $message .= "Yth. {$guest->name},\n\n";
+                $message .= "Mohon maaf, data Anda belum dapat kami verifikasi.\n";
                 $message .= "Alasan: {$reason}\n\n";
-                $message .= "Silakan daftar kembali dengan data yang valid.\n\n";
+                $message .= "Silakan melakukan pendaftaran kembali dengan data yang telah diperbaiki.\n\n";
+                $message .= "Wassalamualaikum warahmatullahi wabarakatuh.\n\n";
                 $message .= "*- Buku Tamu PTA Papua Barat*";
                 
                 $this->whatsappService->sendMessage($guest->phone, $message);

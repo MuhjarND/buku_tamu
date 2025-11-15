@@ -100,7 +100,7 @@ class LoginController extends Controller
             
             case 'receptionist':
                 return redirect()->route('receptionist.guests.index')
-                    ->with('success', 'Selamat datang, Resepsionis!');
+                    ->with('success', 'Selamat datang, PTSP!');
             
             case 'employee':
                 return redirect()->route('employee.guests.index')

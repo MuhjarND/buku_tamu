@@ -87,18 +87,21 @@ class WhatsAppService
     }
 
     /**
-     * Kirim notifikasi verifikasi ke resepsionis
+     * Kirim notifikasi verifikasi ke PTSP
      */
     public function sendVerificationNotification($guest, $receptionistPhone)
     {
         $verifyUrl = url("/receptionist/guest/{$guest->id}");
         
-        $message = "*Tamu Baru Memerlukan Verifikasi*\n\n";
+        $message = "Assalamualaikum warahmatullahi wabarakatuh,\n\n";
+        $message .= "*Informasi Tamu Baru*\n\n";
         $message .= "Nama: {$guest->name}\n";
         $message .= "Telepon: {$guest->phone}\n";
         $message .= "Perusahaan: " . ($guest->company ?? '-') . "\n";
         $message .= "Keperluan: {$guest->purpose}\n\n";
-        $message .= "Silakan verifikasi tamu:\n{$verifyUrl}\n\n";
+        $message .= "Mohon kesediaannya untuk melakukan verifikasi melalui tautan berikut:\n{$verifyUrl}\n\n";
+        $message .= "Terima kasih atas perhatian dan kerja samanya.\n";
+        $message .= "Wassalamualaikum warahmatullahi wabarakatuh.\n\n";
         $message .= "*- Buku Tamu PTA Papua Barat*";
 
         return $this->sendMessage($receptionistPhone, $message);
@@ -111,13 +114,16 @@ class WhatsAppService
     {
         $verifyUrl = url("employee/guest/{$guest->id}");
 
-        $message = "*Anda Memiliki Tamu*\n\n";
-        $message .= "Nama Tamu: {$guest->name}\n";
-        $message .= "Telepon: {$guest->phone}\n";
-        $message .= "Perusahaan: " . ($guest->company ?? '-') . "\n";
-        $message .= "Keperluan: {$guest->purpose}\n";
-        $message .= "*Tamu telah diverifikasi dan menunggu Anda.*\n";
-        $message .= "Tautan untuk melihat. \n{$verifyUrl}\n\n"; 
+        $message = "Assalamualaikum warahmatullahi wabarakatuh,\n\n";
+        $message .= "*Pemberitahuan Kehadiran Tamu*\n\n";
+        $message .= "Yth. {$employeeName},\n";
+        $message .= "Nama Tamu  : {$guest->name}\n";
+        $message .= "Telepon    : {$guest->phone}\n";
+        $message .= "Perusahaan : " . ($guest->company ?? '-') . "\n";
+        $message .= "Keperluan  : {$guest->purpose}\n\n";
+        $message .= "Tamu telah diverifikasi dan menunggu kehadiran Anda di area PTSP.\n";
+        $message .= "Silakan meninjau detail tamu melalui tautan berikut:\n{$verifyUrl}\n\n"; 
+        $message .= "Wassalamualaikum warahmatullahi wabarakatuh.\n\n";
         $message .= "*- Buku Tamu PTA Papua Barat*";
 
         return $this->sendMessage($employeePhone, $message);
@@ -128,11 +134,13 @@ class WhatsAppService
      */
     public function sendGuestNotification($guestPhone, $employeeNames)
     {
-        $message = "*Verifikasi Berhasil*\n\n";
-        $message .= "Terima kasih telah menunggu.\n";
-        $message .= "Pegawai yang Anda tuju akan segera menemui Anda:\n";
+        $message = "Assalamualaikum warahmatullahi wabarakatuh,\n\n";
+        $message .= "*Verifikasi Kehadiran Berhasil*\n\n";
+        $message .= "Terima kasih atas kesediaan Anda menunggu.\n";
+        $message .= "Pegawai yang akan menemui Anda:\n";
         $message .= "- " . implode("\n- ", $employeeNames) . "\n\n";
-        $message .= "Mohon menunggu di area resepsionis.\n\n";
+        $message .= "Mohon berkenan menunggu di area PTSP hingga pegawai terkait tiba.\n\n";
+        $message .= "Wassalamualaikum warahmatullahi wabarakatuh.\n\n";
         $message .= "*- Buku Tamu PTA Papua Barat*";
 
         return $this->sendMessage($guestPhone, $message);
@@ -143,14 +151,18 @@ class WhatsAppService
      */
     public function sendCheckoutNotification($guestPhone, $guestName)
     {
-        $message = "*Terima Kasih Atas Kunjungan Anda*\n\n";
-        $message .= "Halo {$guestName},\n\n";
-        $message .= "Terima kasih telah berkunjung. Checkout Anda telah berhasil dicatat.\n\n";
-        $message .= "Kami sangat menghargai kunjungan Anda. Mohon bantu kami untuk meningkatkan pelayanan dengan mengisi survey kepuasan:\n\n";
-        $message .= "🔗 Survey: s.id/surveyrokap\n\n";
-        $message .= "Sampai jumpa lagi!\n\n";
+        $message = "Assalamualaikum warahmatullahi wabarakatuh,\n\n";
+        $message .= "*Terima Kasih Atas Kunjungan Anda*\n\n";
+        $message .= "Yth. {$guestName},\n\n";
+        $message .= "Terima kasih telah berkunjung ke Pengadilan Tinggi Agama Papua Barat. Checkout Anda sudah kami catat dengan baik.\n\n";
+        $message .= "Sebagai bahan evaluasi pelayanan, mohon kesediaannya untuk mengisi survei berikut:\n";
+        $message .= "Survey: https://s.id/surveyrokap\n\n";
+        $message .= "Kami berharap dapat kembali menyambut Anda di lain kesempatan.\n";
+        $message .= "Wassalamualaikum warahmatullahi wabarakatuh.\n\n";
         $message .= "*- Buku Tamu PTA Papua Barat*";
 
         return $this->sendMessage($guestPhone, $message);
     }
 }
+
+

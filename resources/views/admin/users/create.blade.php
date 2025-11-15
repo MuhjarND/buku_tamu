@@ -80,7 +80,7 @@
                         <select name="role" class="form-select @error('role') is-invalid @enderror" id="role-select" required>
                             <option value="">Pilih Role</option>
                             <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                            <option value="receptionist" {{ old('role') == 'receptionist' ? 'selected' : '' }}>Resepsionis</option>
+                            <option value="receptionist" {{ old('role') == 'receptionist' ? 'selected' : '' }}>PTSP</option>
                             <option value="employee" {{ old('role') == 'employee' ? 'selected' : '' }}>Pegawai</option>
                         </select>
                         @error('role')

@@ -25,7 +25,7 @@
                     <i class="fas fa-user-check"></i>
                 </div>
                 <h4 class="mb-0 fw-bold">{{ $statistics['receptionist'] }}</h4>
-                <small class="text-muted">Resepsionis</small>
+                <small class="text-muted">PTSP</small>
             </div>
         </div>
     </div>
@@ -87,7 +87,7 @@
             <select name="role" class="form-select" onchange="this.form.submit()">
                 <option value="all" {{ $role == 'all' ? 'selected' : '' }}>Semua Role</option>
                 <option value="admin" {{ $role == 'admin' ? 'selected' : '' }}>Admin</option>
-                <option value="receptionist" {{ $role == 'receptionist' ? 'selected' : '' }}>Resepsionis</option>
+                <option value="receptionist" {{ $role == 'receptionist' ? 'selected' : '' }}>PTSP</option>
                 <option value="employee" {{ $role == 'employee' ? 'selected' : '' }}>Pegawai</option>
             </select>
         </div>
@@ -175,7 +175,7 @@
                                 </span>
                             @elseif($user->role == 'receptionist')
                                 <span class="badge bg-warning">
-                                    <i class="fas fa-user-check me-1"></i>Resepsionis
+                                    <i class="fas fa-user-check me-1"></i>PTSP
                                 </span>
                             @elseif($user->role == 'employee')
                                 <span class="badge bg-info">
