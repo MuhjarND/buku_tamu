@@ -37,17 +37,10 @@
                     </span>
                 @endif
 
-                @if($guest->status == 'verified')
-                    <div class="d-grid gap-2 mt-3">
-                        <button class="btn btn-success btn-lg" onclick="startMeeting({{ $guest->id }})">
-                            <i class="fas fa-play me-2"></i>Mulai Pertemuan
-                        </button>
-                    </div>
-                @elseif($guest->status == 'meeting')
-                    <div class="d-grid gap-2 mt-3">
-                        <button class="btn btn-primary btn-lg" onclick="checkoutGuest({{ $guest->id }})">
-                            <i class="fas fa-sign-out-alt me-2"></i>Checkout Tamu
-                        </button>
+                @if(in_array($guest->status, ['verified', 'meeting']))
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-info-circle me-2"></i>Status tamu akan diperbarui oleh petugas PTSP. 
+                        Silakan hubungi PTSP apabila memerlukan bantuan.
                     </div>
                 @endif
 
@@ -226,50 +219,3 @@
 </div>
 @endsection
 
-@push('scripts')
-<script>
-function startMeeting(guestId) {
-    if (!confirm('Apakah Anda sudah bertemu dengan tamu ini?')) {
-        return;
-    }
-
-    $.ajax({
-        url: `/employee/guest/${guestId}/start-meeting`,
-        method: 'POST',
-        beforeSend: function() {
-            $('button').prop('disabled', true);
-        },
-        success: function(response) {
-            alert(response.message);
-            location.reload();
-        },
-        error: function(xhr) {
-            alert(xhr.responseJSON?.message || 'Terjadi kesalahan');
-            $('button').prop('disabled', false);
-        }
-    });
-}
-
-function checkoutGuest(guestId) {
-    if (!confirm('Apakah pertemuan sudah selesai dan tamu akan checkout?')) {
-        return;
-    }
-
-    $.ajax({
-        url: `/employee/guest/${guestId}/checkout`,
-        method: 'POST',
-        beforeSend: function() {
-            $('button').prop('disabled', true);
-        },
-        success: function(response) {
-            alert(response.message);
-            window.location.href = '{{ route("employee.guests.index") }}';
-        },
-        error: function(xhr) {
-            alert(xhr.responseJSON?.message || 'Terjadi kesalahan');
-            $('button').prop('disabled', false);
-        }
-    });
-}
-</script>
-@endpush

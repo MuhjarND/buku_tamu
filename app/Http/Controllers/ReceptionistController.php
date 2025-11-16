@@ -172,6 +172,112 @@ class ReceptionistController extends Controller
     }
 
     /**
+     * Update status tamu menjadi sedang bertemu
+     */
+    public function startMeeting($id)
+    {
+        DB::beginTransaction();
+        try {
+            $guest = DB::table('guests')->where('id', $id)->first();
+
+            if (!$guest) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data tamu tidak ditemukan',
+                ], 404);
+            }
+
+            if ($guest->status !== 'verified') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Status tamu belum siap untuk pertemuan',
+                ], 400);
+            }
+
+            DB::table('guests')
+                ->where('id', $id)
+                ->update([
+                    'status' => 'meeting',
+                    'updated_at' => now(),
+                ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status tamu diperbarui menjadi sedang bertemu.',
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Checkout tamu setelah pertemuan selesai
+     */
+    public function checkout($id)
+    {
+        DB::beginTransaction();
+        try {
+            $guest = DB::table('guests')->where('id', $id)->first();
+
+            if (!$guest) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data tamu tidak ditemukan',
+                ], 404);
+            }
+
+            if ($guest->status === 'completed') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tamu sudah checkout',
+                ], 400);
+            }
+
+            if ($guest->status !== 'meeting') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Status tamu belum dalam pertemuan',
+                ], 400);
+            }
+
+            DB::table('guests')
+                ->where('id', $id)
+                ->update([
+                    'status' => 'completed',
+                    'check_out_time' => now(),
+                    'updated_at' => now(),
+                ]);
+
+            if ($guest->phone) {
+                $this->whatsappService->sendCheckoutNotification($guest->phone, $guest->name);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Checkout tamu berhasil dicatat.',
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
      * Tampilkan halaman status kehadiran pegawai
      */
     public function presenceStatus()

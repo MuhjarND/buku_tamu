@@ -50,6 +50,18 @@
                             <i class="fas fa-times me-2"></i>Tolak
                         </button>
                     </div>
+                @elseif($guest->status == 'verified')
+                    <div class="d-grid gap-2 mt-3">
+                        <button class="btn btn-info btn-lg text-white" onclick="startMeeting({{ $guest->id }})">
+                            <i class="fas fa-handshake me-2"></i>Mulai Pertemuan
+                        </button>
+                    </div>
+                @elseif($guest->status == 'meeting')
+                    <div class="d-grid gap-2 mt-3">
+                        <button class="btn btn-primary btn-lg" onclick="checkoutGuest({{ $guest->id }})">
+                            <i class="fas fa-sign-out-alt me-2"></i>Checkout Tamu
+                        </button>
+                    </div>
                 @endif
 
                 <a href="{{ route('receptionist.guests.index') }}" class="btn btn-secondary mt-2 w-100">
@@ -217,7 +229,51 @@ function verifyGuest(guestId) {
         },
         success: function(response) {
             alert(response.message);
-            window.location.href = '{{ route("receptionist.guests.index") }}';
+            window.location.reload();
+        },
+        error: function(xhr) {
+            alert(xhr.responseJSON?.message || 'Terjadi kesalahan');
+            $('button').prop('disabled', false);
+        }
+    });
+}
+
+function startMeeting(guestId) {
+    if (!confirm('Mulai pertemuan untuk tamu ini?')) {
+        return;
+    }
+
+    $.ajax({
+        url: `/receptionist/guest/${guestId}/start-meeting`,
+        method: 'POST',
+        beforeSend: function() {
+            $('button').prop('disabled', true);
+        },
+        success: function(response) {
+            alert(response.message);
+            location.reload();
+        },
+        error: function(xhr) {
+            alert(xhr.responseJSON?.message || 'Terjadi kesalahan');
+            $('button').prop('disabled', false);
+        }
+    });
+}
+
+function checkoutGuest(guestId) {
+    if (!confirm('Selesaikan pertemuan dan checkout tamu ini?')) {
+        return;
+    }
+
+    $.ajax({
+        url: `/receptionist/guest/${guestId}/checkout`,
+        method: 'POST',
+        beforeSend: function() {
+            $('button').prop('disabled', true);
+        },
+        success: function(response) {
+            alert(response.message);
+            location.reload();
         },
         error: function(xhr) {
             alert(xhr.responseJSON?.message || 'Terjadi kesalahan');

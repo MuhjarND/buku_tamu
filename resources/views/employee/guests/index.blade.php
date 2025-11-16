@@ -88,15 +88,6 @@
     </form>
 </div>
 
-<!-- Info Alert -->
-@if($status == 'verified' && $guests->total() > 0)
-    <div class="alert alert-info alert-dismissible fade show" role="alert">
-        <i class="fas fa-info-circle me-2"></i>
-        <strong>{{ $guests->total() }} tamu</strong> menunggu untuk bertemu dengan Anda. Silakan mulai pertemuan.
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
-
 <!-- Tabel Tamu -->
 <div class="table-card">
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -166,25 +157,10 @@
                             @endif
                         </td>
                         <td>
-                            <div class="btn-group">
-                                <a href="{{ route('employee.guest.show', $guest->id) }}" 
-                                   class="btn btn-sm btn-info text-white" title="Lihat Detail">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                @if($guest->status == 'verified')
-                                    <button class="btn btn-sm btn-success" 
-                                            onclick="startMeeting({{ $guest->id }})"
-                                            title="Mulai Pertemuan">
-                                        <i class="fas fa-play"></i>
-                                    </button>
-                                @elseif($guest->status == 'meeting')
-                                    <button class="btn btn-sm btn-primary" 
-                                            onclick="checkoutGuest({{ $guest->id }})"
-                                            title="Checkout">
-                                        <i class="fas fa-sign-out-alt"></i>
-                                    </button>
-                                @endif
-                            </div>
+                            <a href="{{ route('employee.guest.show', $guest->id) }}" 
+                               class="btn btn-sm btn-info text-white" title="Lihat Detail">
+                                <i class="fas fa-eye"></i>
+                            </a>
                         </td>
                     </tr>
                 @empty
@@ -208,50 +184,3 @@
 </div>
 @endsection
 
-@push('scripts')
-<script>
-function startMeeting(guestId) {
-    if (!confirm('Apakah Anda sudah bertemu dengan tamu ini?')) {
-        return;
-    }
-
-    $.ajax({
-        url: `/employee/guest/${guestId}/start-meeting`,
-        method: 'POST',
-        beforeSend: function() {
-            $('button').prop('disabled', true);
-        },
-        success: function(response) {
-            alert(response.message);
-            location.reload();
-        },
-        error: function(xhr) {
-            alert(xhr.responseJSON?.message || 'Terjadi kesalahan');
-            $('button').prop('disabled', false);
-        }
-    });
-}
-
-function checkoutGuest(guestId) {
-    if (!confirm('Apakah pertemuan sudah selesai dan tamu akan checkout?')) {
-        return;
-    }
-
-    $.ajax({
-        url: `/employee/guest/${guestId}/checkout`,
-        method: 'POST',
-        beforeSend: function() {
-            $('button').prop('disabled', true);
-        },
-        success: function(response) {
-            alert(response.message);
-            location.reload();
-        },
-        error: function(xhr) {
-            alert(xhr.responseJSON?.message || 'Terjadi kesalahan');
-            $('button').prop('disabled', false);
-        }
-    });
-}
-</script>
-@endpush

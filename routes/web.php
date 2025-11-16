@@ -51,6 +51,8 @@ Route::middleware(['auth'])->group(function() {
         Route::get('/guest/{id}', 'ReceptionistController@show')->name('guest.show');
         Route::post('/guest/{id}/verify', 'ReceptionistController@verify')->name('guest.verify');
         Route::post('/guest/{id}/reject', 'ReceptionistController@reject')->name('guest.reject');
+        Route::post('/guest/{id}/start-meeting', 'ReceptionistController@startMeeting')->name('guest.start-meeting');
+        Route::post('/guest/{id}/checkout', 'ReceptionistController@checkout')->name('guest.checkout');
         
         // Status Kehadiran Pegawai
         Route::get('/presence-status', 'ReceptionistController@presenceStatus')->name('presence.status');
@@ -65,8 +67,6 @@ Route::middleware(['auth'])->group(function() {
     Route::middleware(['role:employee'])->prefix('employee')->name('employee.')->group(function() {
         Route::get('/guests', 'EmployeeController@index')->name('guests.index');
         Route::get('/guest/{id}', 'EmployeeController@show')->name('guest.show');
-        Route::post('/guest/{id}/start-meeting', 'EmployeeController@startMeeting')->name('guest.start-meeting');
-        Route::post('/guest/{id}/checkout', 'EmployeeController@checkout')->name('guest.checkout');
     });
     
     /*
