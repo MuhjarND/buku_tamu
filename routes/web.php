@@ -39,8 +39,25 @@ Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 
 Route::middleware(['auth'])->group(function() {
     
-    // Dashboard
-    Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+    // Dashboard redirect to masing-masing role
+    Route::get('/dashboard', function () {
+        $user = auth()->user();
+
+        if (!$user) {
+            return redirect()->route('login');
+        }
+
+        switch ($user->role) {
+            case 'admin':
+                return redirect()->route('admin.guests.index');
+            case 'receptionist':
+                return redirect()->route('receptionist.guests.index');
+            case 'employee':
+                return redirect()->route('employee.guests.index');
+            default:
+                return redirect()->route('login');
+        }
+    })->name('dashboard');
     
     /*
     |--------------------------------------------------------------------------
