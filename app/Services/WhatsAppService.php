@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Services;
 
@@ -112,7 +112,7 @@ class WhatsAppService
      */
     public function sendEmployeeNotification($guest, $employeePhone, $employeeName)
     {
-        $verifyUrl = url("employee/guest/{$guest->id}");
+        // $verifyUrl = url("employee/guest/{$guest->id}");
 
         $message = "Assalamualaikum warahmatullahi wabarakatuh,\n\n";
         $message .= "*Pemberitahuan Kehadiran Tamu*\n\n";
@@ -122,7 +122,7 @@ class WhatsAppService
         $message .= "Perusahaan : " . ($guest->company ?? '-') . "\n";
         $message .= "Keperluan  : {$guest->purpose}\n\n";
         $message .= "Tamu telah diverifikasi dan menunggu kehadiran Anda di area PTSP.\n";
-        $message .= "Silakan meninjau detail tamu melalui tautan berikut:\n{$verifyUrl}\n\n"; 
+        // $message .= "Silakan meninjau detail tamu melalui tautan berikut:\n{$verifyUrl}\n\n"; 
         $message .= "Wassalamualaikum warahmatullahi wabarakatuh.\n\n";
         $message .= "*- Buku Tamu PTA Papua Barat*";
 
