@@ -114,7 +114,7 @@ class WhatsAppService
     {
         // $verifyUrl = url("employee/guest/{$guest->id}");
 
-        $message = "Assalamualaikum warahmatullahi wabarakatuh,\n\n";
+        $message = "Assalamualaikum Wr. Wb,\n\n";
         $message .= "*Pemberitahuan Kehadiran Tamu*\n\n";
         $message .= "Yth. {$employeeName},\n";
         $message .= "Nama Tamu  : {$guest->name}\n";
@@ -123,7 +123,7 @@ class WhatsAppService
         $message .= "Keperluan  : {$guest->purpose}\n\n";
         $message .= "Tamu telah diverifikasi dan menunggu kehadiran Anda di area PTSP.\n";
         // $message .= "Silakan meninjau detail tamu melalui tautan berikut:\n{$verifyUrl}\n\n"; 
-        $message .= "Wassalamualaikum warahmatullahi wabarakatuh.\n\n";
+        $message .= "Wassalamualaikum Wr. Wb.\n\n";
         $message .= "*- Buku Tamu PTA Papua Barat*";
 
         return $this->sendMessage($employeePhone, $message);
