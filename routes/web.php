@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Halaman publik untuk tamu
-Route::get('/', 'GuestController@index')->name('guest.index');
+Route::redirect('/', '/employees')->name('home');
+Route::get('/guest/register', 'GuestController@index')->name('guest.index');
 Route::post('/guest/store', 'GuestController@store')->name('guest.store');
 Route::get('/guest/success', 'GuestController@success')->name('guest.success');
 Route::get('/guest/checkout', 'GuestController@checkoutPage')->name('guest.checkout.page');
