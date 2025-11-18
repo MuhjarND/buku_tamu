@@ -760,7 +760,7 @@
                         <div class="employee-card-modern" data-employee-id="{{ $employee->id }}">
                             <div class="employee-photo-wrapper">
                                 @if($employee->photo)
-                                    <img src="{{ Storage::url($employee->photo) }}" 
+                                    <img src="{{ asset('uploads/' . $employee->photo) }}" 
                                          alt="{{ $employee->name }}"
                                          class="employee-photo">
                                 @else

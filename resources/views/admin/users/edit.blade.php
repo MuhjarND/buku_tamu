@@ -34,7 +34,7 @@
                         <label class="form-label fw-bold">Foto Profil</label>
                         @if($user->photo)
                             <div class="mb-2">
-                                <img src="{{ Storage::url($user->photo) }}" style="max-width: 200px; border-radius: 10px;">
+                                <img src="{{ asset('uploads/' . $user->photo) }}" style="max-width: 200px; border-radius: 10px;">
                                 <p class="text-muted small mb-0">Foto saat ini</p>
                             </div>
                         @endif

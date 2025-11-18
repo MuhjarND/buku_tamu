@@ -10,7 +10,7 @@
         <div class="card stat-card">
             <div class="card-body text-center">
                 @if($guest->photo)
-                    <img src="{{ Storage::url($guest->photo) }}" 
+                    <img src="{{ asset('uploads/' . $guest->photo) }}" 
                          class="rounded-circle mb-3" width="150" height="150" 
                          style="object-fit: cover;">
                 @else

@@ -142,7 +142,7 @@
                         <td>{{ $guests->firstItem() + $loop->index }}</td>
                         <td>
                             @if($guest->photo)
-                                <img src="{{ Storage::url($guest->photo) }}" class="rounded" width="40" height="40" style="object-fit: cover;">
+                                <img src="{{ asset('uploads/' . $guest->photo) }}" class="rounded" width="40" height="40" style="object-fit: cover;">
                             @else
                                 <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #1B4332 0%, #1e3a8a 50%, #B8860B 100%);" 
                                      class="rounded d-flex align-items-center justify-content-center text-white fw-bold">
