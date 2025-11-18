@@ -137,7 +137,7 @@
                         <td>
                             <div class="d-flex align-items-center">
                                 @if($user->photo)
-                                    <img src="{{ asset('storage/' . $user->photo) }}" 
+                                    <img src="{{ Storage::url($user->photo) }}" 
                                          class="rounded-circle me-2" 
                                          style="width: 50px; height: 50px; object-fit: cover;">
                                 @else

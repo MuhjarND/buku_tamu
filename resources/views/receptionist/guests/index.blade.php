@@ -124,7 +124,7 @@
                         <td>{{ $guests->firstItem() + $loop->index }}</td>
                         <td>
                             @if($guest->photo)
-                                <img src="{{ asset('storage/' . $guest->photo) }}" 
+                                <img src="{{ Storage::url($guest->photo) }}" 
                                      class="rounded" width="50" height="50" 
                                      style="object-fit: cover;">
                             @else
