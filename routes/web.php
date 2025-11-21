@@ -74,6 +74,7 @@ Route::middleware(['auth'])->group(function() {
         
         // Status Kehadiran Pegawai
         Route::get('/presence-status', 'ReceptionistController@presenceStatus')->name('presence.status');
+        Route::post('/presence-status/set-all', 'ReceptionistController@setAllPresenceStatus')->name('presence.set-all');
         Route::post('/employee/{id}/presence-status', 'ReceptionistController@updatePresenceStatus')->name('employee.presence.update');
     });
     

@@ -9,13 +9,23 @@
         <h5 class="mb-0 fw-bold">
             <i class="fas fa-user-check me-2"></i>Kelola Status Kehadiran
         </h5>
-        <div>
-            <span class="badge bg-success me-2">
-                <i class="fas fa-circle me-1"></i>Ada: {{ $employees->where('presence_status', 'ada')->count() }}
-            </span>
-            <span class="badge bg-warning">
-                <i class="fas fa-circle me-1"></i>Keluar: {{ $employees->where('presence_status', 'keluar')->count() }}
-            </span>
+        <div class="d-flex align-items-center">
+            <div class="me-3">
+                <span class="badge bg-success me-2">
+                    <i class="fas fa-circle me-1"></i>Ada: {{ $employees->where('presence_status', 'ada')->count() }}
+                </span>
+                <span class="badge bg-warning">
+                    <i class="fas fa-circle me-1"></i>Keluar: {{ $employees->where('presence_status', 'keluar')->count() }}
+                </span>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-sm btn-success" onclick="setAllStatus('ada')">
+                    <i class="fas fa-check-circle me-1"></i>Tandai Semua Ada
+                </button>
+                <button class="btn btn-sm btn-warning" onclick="setAllStatus('keluar')">
+                    <i class="fas fa-sign-out-alt me-1"></i>Tandai Semua Keluar
+                </button>
+            </div>
         </div>
     </div>
 
@@ -134,6 +144,30 @@ function updateStatus(employeeId, status) {
             setTimeout(function() {
                 location.reload();
             }, 1000);
+        },
+        error: function(xhr) {
+            alert(xhr.responseJSON?.message || 'Terjadi kesalahan');
+            $('button').prop('disabled', false);
+        }
+    });
+}
+
+function setAllStatus(status) {
+    const statusText = status === 'ada' ? 'Ada' : 'Keluar';
+    if (!confirm(`Apakah Anda yakin ingin menandai semua pegawai menjadi "${statusText}"?`)) {
+        return;
+    }
+
+    $.ajax({
+        url: `/receptionist/presence-status/set-all`,
+        method: 'POST',
+        data: { status: status },
+        beforeSend: function() {
+            $('button').prop('disabled', true);
+        },
+        success: function(response) {
+            alert(response.message);
+            location.reload();
         },
         error: function(xhr) {
             alert(xhr.responseJSON?.message || 'Terjadi kesalahan');

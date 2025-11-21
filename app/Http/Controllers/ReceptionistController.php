@@ -285,11 +285,48 @@ class ReceptionistController extends Controller
         $employees = DB::table('users')
             ->where('role', 'employee')
             ->where('is_active', true)
+            ->where(function($q) {
+                $q->whereNull('position')
+                  ->orWhereRaw('LOWER(position) != ?', ['staff']);
+            })
             ->orderBy('position_order', 'asc')
             ->orderBy('name', 'asc')
             ->get();
 
         return view('receptionist.presence-status', compact('employees'));
+    }
+
+    /**
+     * Update status kehadiran semua pegawai (non-staff) sekaligus
+     */
+    public function setAllPresenceStatus(Request $request)
+    {
+        $status = $request->input('status');
+
+        if (!in_array($status, ['ada', 'keluar'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Status tidak valid',
+            ], 400);
+        }
+
+        DB::table('users')
+            ->where('role', 'employee')
+            ->where('is_active', true)
+            ->where(function($q) {
+                $q->whereNull('position')
+                  ->orWhereRaw('LOWER(position) != ?', ['staff']);
+            })
+            ->update([
+                'presence_status' => $status,
+                'presence_updated_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Status semua pegawai telah diubah menjadi {$status}.",
+        ]);
     }
 
     /**

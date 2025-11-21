@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class ReportController extends Controller
 {
@@ -114,64 +115,25 @@ class ReportController extends Controller
 
         $guests = $query->select('guests.*')
             ->orderBy('guests.check_in_time', 'desc')
-            ->get();
+            ->get()
+            ->map(function ($guest, $index) {
+                $employees = DB::table('guest_employees')
+                    ->join('users', 'guest_employees.employee_id', '=', 'users.id')
+                    ->where('guest_employees.guest_id', $guest->id)
+                    ->pluck('users.name')
+                    ->toArray();
 
-        // Set header untuk download CSV
-        $filename = 'laporan-tamu-' . $dateFrom . '-' . $dateTo . '.csv';
-        
-        header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename=' . $filename);
-        
-        $output = fopen('php://output', 'w');
-        
-        // BOM untuk Excel UTF-8
-        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
-        
-        // Header CSV
-        fputcsv($output, [
-            'No',
-            'Nama',
-            'Telepon',
-            'Email',
-            'Perusahaan',
-            'Keperluan',
-            'Status',
-            'Check In',
-            'Check Out',
-            'Pegawai Dituju'
-        ]);
+                $guest->no = $index + 1;
+                $guest->employees = implode(', ', $employees);
+                return $guest;
+            });
 
-        // Data rows
-        foreach ($guests as $index => $guest) {
-            // Ambil nama pegawai yang dituju
-            $employees = DB::table('guest_employees')
-                ->join('users', 'guest_employees.employee_id', '=', 'users.id')
-                ->where('guest_employees.guest_id', $guest->id)
-                ->pluck('users.name')
-                ->toArray();
+        $pdf = PDF::loadView('admin.reports.pdf', [
+            'guests' => $guests,
+            'dateFrom' => $dateFrom,
+            'dateTo' => $dateTo,
+        ])->setPaper('A4', 'portrait');
 
-            $statusLabel = [
-                'pending' => 'Menunggu',
-                'verified' => 'Terverifikasi',
-                'meeting' => 'Bertemu',
-                'completed' => 'Selesai',
-            ];
-
-            fputcsv($output, [
-                $index + 1,
-                $guest->name,
-                $guest->phone,
-                $guest->email ?? '-',
-                $guest->company ?? '-',
-                $guest->purpose,
-                $statusLabel[$guest->status] ?? $guest->status,
-                $guest->check_in_time ? date('d/m/Y H:i', strtotime($guest->check_in_time)) : '-',
-                $guest->check_out_time ? date('d/m/Y H:i', strtotime($guest->check_out_time)) : '-',
-                implode(', ', $employees)
-            ]);
-        }
-
-        fclose($output);
-        exit;
+        return $pdf->download('laporan-tamu-' . $dateFrom . '-' . $dateTo . '.pdf');
     }
 }

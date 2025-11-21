@@ -43,7 +43,11 @@ class EmployeeListController extends Controller
         $query = DB::table('users')
             ->where('role', 'employee')
             ->where('is_active', true)
-            ->whereIn('position', $publicPositionNames);
+            ->whereIn('position', $publicPositionNames)
+            // Pastikan Ketua tampil terlebih dahulu di setiap posisi
+            ->orderByRaw("CASE WHEN LOWER(COALESCE(keterangan, '')) = 'ketua' THEN 0 ELSE 1 END")
+            ->orderBy('position_order', 'asc')
+            ->orderBy('name', 'asc');
 
         // Filter berdasarkan jabatan
         if ($positionFilter && $positionFilter !== 'all') {
@@ -55,9 +59,7 @@ class EmployeeListController extends Controller
             $query->where('name', 'like', "%{$search}%");
         }
 
-        $allEmployees = $query
-            ->orderBy('name', 'asc')
-            ->get();
+        $allEmployees = $query->get();
 
         // Group employees by position
         $employeesByPosition = $allEmployees->groupBy('position');
