@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <style>
+        @page { size: A4 landscape; margin: 20px; }
         body { font-family: DejaVu Sans, sans-serif; font-size: 11px; }
         .kop { text-align: center; margin-bottom: 12px; }
         .kop img { width: 100%; max-width: 700px; }

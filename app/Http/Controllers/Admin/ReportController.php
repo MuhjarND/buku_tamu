@@ -132,7 +132,7 @@ class ReportController extends Controller
             'guests' => $guests,
             'dateFrom' => $dateFrom,
             'dateTo' => $dateTo,
-        ])->setPaper('A4', 'portrait');
+        ])->setPaper('A4', 'landscape');
 
         return $pdf->download('laporan-tamu-' . $dateFrom . '-' . $dateTo . '.pdf');
     }

@@ -43,7 +43,10 @@ class EmployeeListController extends Controller
         $query = DB::table('users')
             ->where('role', 'employee')
             ->where('is_active', true)
-            ->whereIn('position', $publicPositionNames)
+            ->where(function($q) use ($publicPositionNames) {
+                $q->whereIn('position', $publicPositionNames)
+                  ->orWhereRaw("LOWER(COALESCE(keterangan, '')) = 'ketua'");
+            })
             // Pastikan Ketua tampil terlebih dahulu di setiap posisi
             ->orderByRaw("CASE WHEN LOWER(COALESCE(keterangan, '')) = 'ketua' THEN 0 ELSE 1 END")
             ->orderBy('position_order', 'asc')

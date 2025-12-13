@@ -30,7 +30,7 @@
             border: 1px solid rgba(255,255,255,0.25);
             color: #fff;
             border-radius: 999px;
-            padding: 0.35rem 0.75rem;
+            padding: 0.35rem 0.75rem;   
             font-size: 0.85rem;
         }
         .card-body {

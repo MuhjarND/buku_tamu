@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Services;
 
@@ -121,8 +121,8 @@ class WhatsAppService
         $message .= "Telepon    : {$guest->phone}\n";
         $message .= "Perusahaan : " . ($guest->company ?? '-') . "\n";
         $message .= "Keperluan  : {$guest->purpose}\n\n";
-        $message .= "Tamu telah diverifikasi dan menunggu kehadiran Anda di area PTSP.\n";
-        $message .= "Berikan arahan untuk PTSP melalui tautan berikut (tanpa perlu login):\n{$instructionUrl}\n\n"; 
+        $message .= "Tamu telah diverifikasi dan menunggu kehadiran Anda di area PTSP.\n\n";
+        $message .= "*Berikan arahan untuk PTSP* melalui tautan berikut:\n{$instructionUrl}\n\n"; 
         $message .= "Wassalamualaikum warahmatullahi wabarakatuh.\n\n";
         $message .= "*- Buku Tamu PTA Papua Barat*";
 
