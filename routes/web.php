@@ -20,6 +20,9 @@ Route::post('/guest/checkout/{id}', 'GuestController@checkout')->name('guest.che
 // Halaman daftar pegawai publik
 Route::get('/employees', 'EmployeeListController@index')->name('employees.list');
 Route::get('/employees/status', 'EmployeeListController@getStatus')->name('employees.status');
+// Form arahan publik untuk pegawai
+Route::get('/instruction/{token}', 'InstructionController@show');
+Route::post('/instruction/{token}', 'InstructionController@submit');
 
 /*
 |--------------------------------------------------------------------------
@@ -86,6 +89,7 @@ Route::middleware(['auth'])->group(function() {
     Route::middleware(['role:employee'])->prefix('employee')->name('employee.')->group(function() {
         Route::get('/guests', 'EmployeeController@index')->name('guests.index');
         Route::get('/guest/{id}', 'EmployeeController@show')->name('guest.show');
+        Route::post('/guest/{id}/instructions', 'EmployeeController@submitInstructions')->name('guest.instructions');
     });
     
     /*

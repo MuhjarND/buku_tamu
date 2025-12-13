@@ -155,6 +155,17 @@
                                             </span>
                                         </div>
                                     @endif
+                                    @if($employee->instructions)
+                                        <div class="mt-2">
+                                            <small class="text-muted">Arahan untuk PTSP:</small>
+                                            <div class="alert alert-light border p-2 mb-0">
+                                                {{ $employee->instructions }}
+                                                @if($employee->instructions_submitted_at)
+                                                    <div><small class="text-muted">Dikirim: {{ \Carbon\Carbon::parse($employee->instructions_submitted_at)->diffForHumans() }}</small></div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>

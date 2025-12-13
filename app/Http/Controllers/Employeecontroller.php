@@ -5,8 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Services\WhatsAppService;
+
 class EmployeeController extends Controller
 {
+    protected $whatsappService;
+
+    public function __construct(WhatsAppService $whatsappService)
+    {
+        $this->whatsappService = $whatsappService;
+    }
 
     /**
      * Tampilkan daftar tamu untuk pegawai
@@ -84,6 +92,11 @@ class EmployeeController extends Controller
                 ->with('error', 'Anda tidak memiliki akses ke tamu ini');
         }
 
+        $ownInstruction = DB::table('guest_employees')
+            ->where('guest_id', $id)
+            ->where('employee_id', $employeeId)
+            ->first();
+
         $guest = DB::table('guests')
             ->where('id', $id)
             ->first();
@@ -97,7 +110,7 @@ class EmployeeController extends Controller
         $employees = DB::table('guest_employees')
             ->join('users', 'guest_employees.employee_id', '=', 'users.id')
             ->where('guest_employees.guest_id', $id)
-            ->select('users.*', 'guest_employees.is_notified', 'guest_employees.notified_at')
+            ->select('users.*', 'guest_employees.is_notified', 'guest_employees.notified_at', 'guest_employees.instructions', 'guest_employees.instructions_submitted_at')
             ->get();
 
         // Ambil info verifikator
@@ -108,7 +121,61 @@ class EmployeeController extends Controller
                 ->first();
         }
 
-        return view('employee.guests.show', compact('guest', 'employees', 'verifiedBy'));
+        return view('employee.guests.show', compact('guest', 'employees', 'verifiedBy', 'ownInstruction'));
     }
 
+    /**
+     * Simpan arahan untuk resepsionis
+     */
+    public function submitInstructions(Request $request, $id)
+    {
+        $employeeId = Auth::id();
+
+        // Cek akses
+        $guestEmployee = DB::table('guest_employees')
+            ->where('guest_id', $id)
+            ->where('employee_id', $employeeId)
+            ->first();
+
+        if (!$guestEmployee) {
+            return redirect()->route('employee.guests.index')
+                ->with('error', 'Anda tidak memiliki akses ke tamu ini');
+        }
+
+        $request->validate([
+            'instructions' => 'required|string|max:1000',
+        ], [
+            'instructions.required' => 'Arahan harus diisi',
+        ]);
+
+        // Simpan arahan
+        DB::table('guest_employees')
+            ->where('guest_id', $id)
+            ->where('employee_id', $employeeId)
+            ->update([
+                'instructions' => $request->instructions,
+                'instructions_submitted_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+        // Kirim notifikasi ke resepsionis
+        $guest = DB::table('guests')->where('id', $id)->first();
+        $receptionist = DB::table('users')
+            ->where('role', 'receptionist')
+            ->where('is_active', true)
+            ->first();
+
+        if ($guest && $receptionist && $receptionist->phone) {
+            $this->whatsappService->sendInstructionNotification(
+                $receptionist->phone,
+                Auth::user()->name,
+                $guest->name,
+                $request->instructions,
+                $guest->id
+            );
+        }
+
+        return redirect()->route('employee.guest.show', $id)
+            ->with('success', 'Arahan berhasil dikirim ke PTSP.');
+    }
 }

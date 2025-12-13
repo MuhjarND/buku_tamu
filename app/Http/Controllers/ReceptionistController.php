@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use App\Services\WhatsAppService;
 
 class ReceptionistController extends Controller
@@ -74,7 +75,7 @@ class ReceptionistController extends Controller
         $employees = DB::table('guest_employees')
             ->join('users', 'guest_employees.employee_id', '=', 'users.id')
             ->where('guest_employees.guest_id', $id)
-            ->select('users.*', 'guest_employees.is_notified', 'guest_employees.notified_at')
+            ->select('users.*', 'guest_employees.is_notified', 'guest_employees.notified_at', 'guest_employees.instructions', 'guest_employees.instructions_submitted_at')
             ->get();
 
         // Ambil info verifikator jika ada
@@ -125,15 +126,28 @@ class ReceptionistController extends Controller
             $employees = DB::table('guest_employees')
                 ->join('users', 'guest_employees.employee_id', '=', 'users.id')
                 ->where('guest_employees.guest_id', $id)
-                ->select('users.id', 'users.name', 'users.phone')
+                ->select('users.id', 'users.name', 'users.phone', 'guest_employees.instruction_token')
                 ->get();
 
             $employeeNames = [];
 
             // Kirim notifikasi ke setiap pegawai
             foreach ($employees as $employee) {
+                // Pastikan token ada
+                if (!$employee->instruction_token) {
+                    $token = Str::random(60);
+                    DB::table('guest_employees')
+                        ->where('guest_id', $id)
+                        ->where('employee_id', $employee->id)
+                        ->update([
+                            'instruction_token' => $token,
+                            'updated_at' => now(),
+                        ]);
+                    $employee->instruction_token = $token;
+                }
+
                 if ($employee->phone) {
-                    $this->whatsappService->sendEmployeeNotification($guest, $employee->phone, $employee->name);
+                    $this->whatsappService->sendEmployeeNotification($guest, $employee->phone, $employee->name, $employee->instruction_token);
                     
                     // Update status notifikasi
                     DB::table('guest_employees')

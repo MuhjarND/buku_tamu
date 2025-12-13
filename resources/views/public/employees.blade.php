@@ -862,54 +862,50 @@
 
         // Smooth Continuous Auto Scroll
         function startContinuousScroll() {
-            if (scrollAnimation) return;
-            
-            const scrollSpeed = 1; // pixel per frame
-            const pauseAtBottom = 2000; // 2 detik pause di bawah
-            let isAtBottom = false;
-            let pauseTimeout = null;
+            stopContinuousScroll();
 
-            function scroll() {
+            const scrollSpeed = 3; // pixel per tick (lebih cepat)
+            const pauseAtBottom = 500; // jeda singkat sebelum kembali ke atas
+            const tickDelay = 14; // lebih rapat agar tidak tersendat
+            let loopTimeout = null;
+
+            function scheduleNext(delay = tickDelay) {
+                loopTimeout = setTimeout(loop, delay);
+                scrollAnimation = loopTimeout;
+            }
+
+            function loop() {
                 if (!autoScrollEnabled) return;
 
                 const scrollHeight = $(document).height();
                 const scrollPos = $(window).scrollTop();
                 const windowHeight = $(window).height();
-                
-                // Cek jika sudah di bawah
+
+                // Jika sudah di bawah, jeda sebentar lalu animasi ke atas dan lanjut
                 if (scrollPos + windowHeight >= scrollHeight - 10) {
-                    if (!isAtBottom) {
-                        isAtBottom = true;
-                        // Pause sebentar di bawah
-                        pauseTimeout = setTimeout(() => {
-                            // Scroll smooth ke atas
-                            $('html, body').animate({
-                                scrollTop: 0
-                            }, 2000, 'linear', function() {
-                                isAtBottom = false;
-                                // Lanjutkan scroll continuous setelah sampai atas
-                                setTimeout(() => {
-                                    scrollAnimation = requestAnimationFrame(scroll);
-                                }, 500);
-                            });
-                        }, pauseAtBottom);
-                    }
-                } else if (!isAtBottom) {
-                    // Scroll continuous ke bawah
-                    window.scrollBy(0, scrollSpeed);
-                    scrollAnimation = requestAnimationFrame(scroll);
+                    scheduleNext(pauseAtBottom);
+                    $('html, body').animate({ scrollTop: 0 }, 800, 'linear', function() {
+                        if (autoScrollEnabled) {
+                            scheduleNext();
+                        }
+                    });
+                    return;
                 }
+
+                // Scroll ke bawah
+                window.scrollBy(0, scrollSpeed);
+                scheduleNext();
             }
 
-            scrollAnimation = requestAnimationFrame(scroll);
+            scheduleNext();
         }
 
         function stopContinuousScroll() {
             if (scrollAnimation) {
-                cancelAnimationFrame(scrollAnimation);
+                clearTimeout(scrollAnimation);
                 scrollAnimation = null;
             }
-            $('html, body').stop(); // Stop jQuery animations
+            $('html, body').stop(true, false); // Stop jQuery animations
         }
 
         // Toggle Auto Scroll

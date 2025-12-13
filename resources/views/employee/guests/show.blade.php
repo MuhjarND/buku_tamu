@@ -38,9 +38,26 @@
                 @endif
 
                 @if(in_array($guest->status, ['verified', 'meeting']))
-                    <div class="alert alert-info mt-3">
-                        <i class="fas fa-info-circle me-2"></i>Status tamu akan diperbarui oleh petugas PTSP. 
-                        Silakan hubungi PTSP apabila memerlukan bantuan.
+                    <div class="alert alert-info mt-3" id="arahan">
+                        <h6 class="fw-bold mb-2"><i class="fas fa-comment-dots me-2"></i>Beri Arahan untuk PTSP</h6>
+                        @if(session('success'))
+                            <div class="alert alert-success py-2">{{ session('success') }}</div>
+                        @endif
+                        <form method="POST" action="{{ route('employee.guest.instructions', $guest->id) }}">
+                            @csrf
+                            <div class="mb-2">
+                                <textarea name="instructions" class="form-control" rows="3" placeholder="Contoh: Tamu ditunggu di ruang rapat lantai 2." required>{{ old('instructions', optional($ownInstruction)->instructions) }}</textarea>
+                                @error('instructions')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="fas fa-paper-plane me-1"></i>Kirim Arahan ke PTSP
+                            </button>
+                            @if(optional($ownInstruction)->instructions_submitted_at)
+                                <small class="text-muted ms-2">Terakhir dikirim: {{ \Carbon\Carbon::parse($ownInstruction->instructions_submitted_at)->diffForHumans() }}</small>
+                            @endif
+                        </form>
                     </div>
                 @endif
 
@@ -218,4 +235,3 @@
     </div>
 </div>
 @endsection
-

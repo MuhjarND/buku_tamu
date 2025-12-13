@@ -110,11 +110,11 @@ class WhatsAppService
     /**
      * Kirim notifikasi ke pegawai yang dituju
      */
-    public function sendEmployeeNotification($guest, $employeePhone, $employeeName)
+    public function sendEmployeeNotification($guest, $employeePhone, $employeeName, $instructionToken)
     {
-        // $verifyUrl = url("employee/guest/{$guest->id}");
+        $instructionUrl = url("instruction/{$instructionToken}");
 
-        $message = "Assalamualaikum Wr. Wb,\n\n";
+        $message = "Assalamualaikum warahmatullahi wabarakatuh,\n\n";
         $message .= "*Pemberitahuan Kehadiran Tamu*\n\n";
         $message .= "Yth. {$employeeName},\n";
         $message .= "Nama Tamu  : {$guest->name}\n";
@@ -122,8 +122,8 @@ class WhatsAppService
         $message .= "Perusahaan : " . ($guest->company ?? '-') . "\n";
         $message .= "Keperluan  : {$guest->purpose}\n\n";
         $message .= "Tamu telah diverifikasi dan menunggu kehadiran Anda di area PTSP.\n";
-        // $message .= "Silakan meninjau detail tamu melalui tautan berikut:\n{$verifyUrl}\n\n"; 
-        $message .= "Wassalamualaikum Wr. Wb.\n\n";
+        $message .= "Berikan arahan untuk PTSP melalui tautan berikut (tanpa perlu login):\n{$instructionUrl}\n\n"; 
+        $message .= "Wassalamualaikum warahmatullahi wabarakatuh.\n\n";
         $message .= "*- Buku Tamu PTA Papua Barat*";
 
         return $this->sendMessage($employeePhone, $message);
@@ -163,6 +163,23 @@ class WhatsAppService
 
         return $this->sendMessage($guestPhone, $message);
     }
+
+    /**
+     * Kirim notifikasi arahan dari pegawai ke resepsionis
+     */
+    public function sendInstructionNotification($receptionistPhone, $employeeName, $guestName, $instructions, $guestId)
+    {
+        $detailUrl = url("/receptionist/guest/{$guestId}");
+
+        $message = "Assalamualaikum warahmatullahi wabarakatuh,\n\n";
+        $message .= "*Arahan dari Pegawai*\n\n";
+        $message .= "Pegawai: {$employeeName}\n";
+        $message .= "Untuk tamu: {$guestName}\n\n";
+        $message .= "Arahan:\n{$instructions}\n\n";
+        $message .= "Detail tamu: {$detailUrl}\n\n";
+        $message .= "Wassalamualaikum warahmatullahi wabarakatuh.\n\n";
+        $message .= "*- Buku Tamu PTA Papua Barat*";
+
+        return $this->sendMessage($receptionistPhone, $message);
+    }
 }
-
-
