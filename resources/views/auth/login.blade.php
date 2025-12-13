@@ -159,18 +159,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Info akun demo -->
-                <div class="card mt-3" style="border-radius: 15px;">
-                    <div class="card-body">
-                        <h6 class="fw-bold mb-3"><i class="fas fa-info-circle me-2"></i>Akun Demo</h6>
-                        <small class="text-muted">
-                            <strong>Admin:</strong> admin@example.com / password<br>
-                            <strong>PTSP:</strong> receptionist@example.com / password<br>
-                            <strong>Pegawai:</strong> budi@example.com / password
-                        </small>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
