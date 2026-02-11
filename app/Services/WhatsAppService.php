@@ -28,6 +28,11 @@ class WhatsAppService
         try {
             // Format nomor telepon (pastikan format 628xxx)
             $phone = $this->formatPhone($phone);
+            $messagePrefix = "*[BUKU TAMU NOTIF]*\n\n";
+
+            if (strpos($message, $messagePrefix) !== 0) {
+                $message = $messagePrefix . $message;
+            }
 
             $response = Http::withHeaders([
                 'Authorization' => $this->token,
