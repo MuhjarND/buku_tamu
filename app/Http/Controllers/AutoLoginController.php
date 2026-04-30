@@ -1,0 +1,81 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Services\ChatbotGatewayService;
+use App\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
+class AutoLoginController extends Controller
+{
+    public function __invoke(Request $request, ChatbotGatewayService $gateway)
+    {
+        $token = $this->tokenFromRequest($request);
+
+        if ($token === '') {
+            return $this->errorResponse();
+        }
+
+        $validation = $gateway->validateMagicToken($token);
+
+        if (empty($validation['valid']) || empty($validation['app_user_id'])) {
+            return $this->errorResponse();
+        }
+
+        $appUserId = (string) $validation['app_user_id'];
+        $user = User::where('id', $appUserId)
+            ->orWhere('email', $appUserId)
+            ->first();
+
+        if (!$user) {
+            Log::warning('Chatbot magic login user not found', [
+                'app_user_id_hash' => substr(hash('sha256', $appUserId), 0, 16),
+            ]);
+
+            return $this->errorResponse();
+        }
+
+        if (!$user->is_active) {
+            Log::warning('Chatbot magic login inactive user', [
+                'user_id' => $user->id,
+            ]);
+
+            return $this->errorResponse();
+        }
+
+        $guard = config('auth.defaults.guard', 'web');
+        Auth::guard($guard)->login($user);
+        $request->session()->regenerate();
+
+        return redirect()->route('dashboard');
+    }
+
+    private function errorResponse()
+    {
+        return response()
+            ->view('auth.autologin-error', [
+                'message' => config('chatbot.autologin_error_message'),
+            ], 401);
+    }
+
+    private function tokenFromRequest(Request $request)
+    {
+        $rawQuery = (string) $request->server('QUERY_STRING', '');
+
+        foreach (explode('&', $rawQuery) as $part) {
+            if ($part === '') {
+                continue;
+            }
+
+            [$key, $value] = array_pad(explode('=', $part, 2), 2, '');
+
+            if (rawurldecode($key) === 'token') {
+                return rawurldecode($value);
+            }
+        }
+
+        return (string) $request->query('token', '');
+    }
+}

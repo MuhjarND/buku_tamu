@@ -33,6 +33,7 @@ Route::post('/instruction/{token}', 'InstructionController@submit');
 Route::get('/login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('/login', 'Auth\LoginController@login');
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
+Route::get('/autologin', 'AutoLoginController')->name('autologin');
 
 /*
 |--------------------------------------------------------------------------
