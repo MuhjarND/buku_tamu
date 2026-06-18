@@ -14,9 +14,11 @@
     </style>
 </head>
 <body>
-    <div class="kop">
-        <img src="{{ public_path('kop_laporan.jpg') }}" alt="Kop Laporan">
-    </div>
+    @if($letterheadImage)
+        <div class="kop">
+            <img src="{{ $letterheadImage }}" alt="Kop Laporan">
+        </div>
+    @endif
     <h3>LAPORAN KUNJUNGAN TAMU<br>
         Periode {{ \Carbon\Carbon::parse($dateFrom)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($dateTo)->format('d/m/Y') }}
     </h3>
@@ -41,8 +43,8 @@
                     <td>{{ $guest->no }}</td>
                     <td>{{ $guest->check_in_time ? \Carbon\Carbon::parse($guest->check_in_time)->format('d/m/Y H:i') : '-' }}</td>
                     <td>
-                        @if($guest->photo)
-                            <img src="{{ public_path('uploads/' . $guest->photo) }}" alt="Foto" style="width:50px; height:50px; object-fit: cover; border-radius:4px;">
+                        @if($guest->photo_data_uri)
+                            <img src="{{ $guest->photo_data_uri }}" alt="Foto" style="width:50px; height:50px; object-fit: cover; border-radius:4px;">
                         @else
                             -
                         @endif

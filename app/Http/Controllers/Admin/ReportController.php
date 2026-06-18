@@ -125,6 +125,10 @@ class ReportController extends Controller
 
                 $guest->no = $index + 1;
                 $guest->employees = implode(', ', $employees);
+                $guest->photo_data_uri = $guest->photo
+                    ? $this->imageToPngDataUri(public_path('uploads/' . ltrim($guest->photo, '/\\')), 160, 160)
+                    : null;
+
                 return $guest;
             });
 
@@ -132,8 +136,73 @@ class ReportController extends Controller
             'guests' => $guests,
             'dateFrom' => $dateFrom,
             'dateTo' => $dateTo,
+            'letterheadImage' => $this->imageToPngDataUri(public_path('kop_laporan.jpg'), 1400, 300),
         ])->setPaper('A4', 'landscape');
 
         return $pdf->download('laporan-tamu-' . $dateFrom . '-' . $dateTo . '.pdf');
+    }
+
+    /**
+     * Normalisasi gambar menjadi PNG agar Dompdf tidak bergantung pada ekstensi file.
+     */
+    private function imageToPngDataUri($path, $maxWidth, $maxHeight)
+    {
+        if (!is_file($path) || !is_readable($path)) {
+            return null;
+        }
+
+        $contents = @file_get_contents($path);
+        if ($contents === false || $contents === '') {
+            return null;
+        }
+
+        if (!function_exists('imagecreatefromstring')) {
+            $imageInfo = @getimagesizefromstring($contents);
+
+            return $imageInfo && isset($imageInfo['mime'])
+                ? 'data:' . $imageInfo['mime'] . ';base64,' . base64_encode($contents)
+                : null;
+        }
+
+        $source = @imagecreatefromstring($contents);
+        if ($source === false) {
+            return null;
+        }
+
+        $sourceWidth = imagesx($source);
+        $sourceHeight = imagesy($source);
+        $scale = min(1, $maxWidth / $sourceWidth, $maxHeight / $sourceHeight);
+        $targetWidth = max(1, (int) round($sourceWidth * $scale));
+        $targetHeight = max(1, (int) round($sourceHeight * $scale));
+
+        $target = imagecreatetruecolor($targetWidth, $targetHeight);
+        imagealphablending($target, false);
+        imagesavealpha($target, true);
+        $transparent = imagecolorallocatealpha($target, 0, 0, 0, 127);
+        imagefilledrectangle($target, 0, 0, $targetWidth, $targetHeight, $transparent);
+
+        imagecopyresampled(
+            $target,
+            $source,
+            0,
+            0,
+            0,
+            0,
+            $targetWidth,
+            $targetHeight,
+            $sourceWidth,
+            $sourceHeight
+        );
+
+        ob_start();
+        $encoded = imagepng($target);
+        $png = ob_get_clean();
+
+        imagedestroy($source);
+        imagedestroy($target);
+
+        return $encoded && $png !== false
+            ? 'data:image/png;base64,' . base64_encode($png)
+            : null;
     }
 }
