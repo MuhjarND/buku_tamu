@@ -66,11 +66,7 @@
         .app-logo {
             width: 46px;
             height: 46px;
-            border-radius: 50%;
             object-fit: contain;
-            background: rgba(255, 255, 255, 0.96);
-            padding: 4px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
         }
 
         .header-actions {
@@ -889,7 +885,7 @@
             stopContinuousScroll();
 
             const scrollDownSpeed = 3;
-            const scrollUpSpeed = 8;
+            const scrollUpSpeed = scrollDownSpeed;
             const tickDelay = 14;
             const pauseAtEdge = 650;
             let isPaused = false;

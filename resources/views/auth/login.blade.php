@@ -78,10 +78,6 @@
             width: 86px;
             height: 86px;
             object-fit: contain;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.96);
-            padding: 8px;
-            box-shadow: 0 10px 28px rgba(0,0,0,0.25);
         }
     </style>
 </head>

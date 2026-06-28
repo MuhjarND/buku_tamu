@@ -53,9 +53,6 @@
             width: 38px;
             height: 38px;
             object-fit: contain;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.95);
-            padding: 4px;
         }
 
         .sidebar-menu {
