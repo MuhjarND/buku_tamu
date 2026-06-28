@@ -87,7 +87,7 @@
             <div class="col-lg-5 col-md-7">
                 <div class="card login-card">
                     <div class="login-header">
-                        <img src="{{ asset('logo.png') }}" alt="Logo PTA Papua Barat" class="login-logo mb-3">
+                        <img src="{{ asset('logo2.png') }}" alt="Logo PTA Papua Barat" class="login-logo mb-3">
                         <h3 class="mb-0 fw-bold">Login Sistem</h3>
                         <p class="mb-0 mt-2">Buku Tamu Digital</p>
                     </div>

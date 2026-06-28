@@ -208,7 +208,7 @@
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <h4><img src="{{ asset('logo.png') }}" alt="Logo PTA Papua Barat" class="sidebar-logo">Buku Tamu</h4>
+            <h4><img src="{{ asset('logo2.png') }}" alt="Logo PTA Papua Barat" class="sidebar-logo">Buku Tamu</h4>
             <small class="text-white-50">{{ ucfirst(Auth::user()->role) }} Panel</small>
         </div>
         

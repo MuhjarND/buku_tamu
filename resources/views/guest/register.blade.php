@@ -88,7 +88,7 @@
             <div class="col-lg-8">
                 <div class="card">
                     <div class="card-header text-center">
-                        <img src="{{ asset('logo.png') }}" alt="Logo PTA Papua Barat" class="brand-logo mb-3">
+                        <img src="{{ asset('logo2.png') }}" alt="Logo PTA Papua Barat" class="brand-logo mb-3">
                         <h2 class="mb-0">Buku Tamu Digital</h2>
                         <p class="mb-0 mt-2">Silakan isi data Anda dengan lengkap</p>
                         <a href="{{ route('employees.list') }}" class="btn btn-sm btn-light mt-2" style="border-radius: 20px;">

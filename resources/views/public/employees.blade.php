@@ -674,7 +674,7 @@
     <div class="modern-header">
         <div class="header-content">
             <div class="logo-section">
-                <h1><img src="{{ asset('logo.png') }}" alt="Logo PTA Papua Barat" class="app-logo">Daftar Pejabat PTA Papua Barat</h1>
+                <h1><img src="{{ asset('logo2.png') }}" alt="Logo PTA Papua Barat" class="app-logo">Daftar Pejabat PTA Papua Barat</h1>
                 <p>Status Kehadiran Real-time</p>
             </div>
             <div class="header-actions">

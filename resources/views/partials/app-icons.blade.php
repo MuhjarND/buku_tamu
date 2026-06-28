@@ -1,4 +1,4 @@
-<link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
+<link rel="icon" type="image/png" href="{{ asset('logo2.png') }}">
 <link rel="apple-touch-icon" href="{{ asset('pwa-icon-192.png') }}">
 <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
 <meta name="theme-color" content="#1B4332">
