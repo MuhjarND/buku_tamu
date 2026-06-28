@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buku Tamu - Registrasi</title>
+    @include('partials.app-icons')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
@@ -74,6 +75,15 @@
             background-color: #d1e7dd !important;
             color: #0f5132 !important;
         }
+        .brand-logo {
+            width: 58px;
+            height: 58px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.96);
+            padding: 5px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+        }
     </style>
 </head>
 <body>
@@ -82,7 +92,8 @@
             <div class="col-lg-8">
                 <div class="card">
                     <div class="card-header text-center">
-                        <h2 class="mb-0"><i class="fas fa-clipboard-user me-2"></i>Buku Tamu Digital</h2>
+                        <img src="{{ asset('logo.png') }}" alt="Logo PTA Papua Barat" class="brand-logo mb-3">
+                        <h2 class="mb-0">Buku Tamu Digital</h2>
                         <p class="mb-0 mt-2">Silakan isi data Anda dengan lengkap</p>
                         <a href="{{ route('employees.list') }}" class="btn btn-sm btn-light mt-2" style="border-radius: 20px;">
                             <i class="fas fa-users me-1"></i>Lihat Daftar Pegawai

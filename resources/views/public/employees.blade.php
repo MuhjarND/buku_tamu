@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Pegawai - Status Kehadiran</title>
+    @include('partials.app-icons')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -49,6 +50,9 @@
             color: white;
             margin: 0;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
 
         .logo-section p {
@@ -56,6 +60,17 @@
             color: rgba(255, 255, 255, 0.9);
             margin: 0;
             font-weight: 500;
+            padding-left: 3.65rem;
+        }
+
+        .app-logo {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            object-fit: contain;
+            background: rgba(255, 255, 255, 0.96);
+            padding: 4px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
         }
 
         .header-actions {
@@ -567,6 +582,13 @@
             .logo-section h1 {
                 font-size: 1.5rem;
             }
+            .logo-section p {
+                padding-left: 3.35rem;
+            }
+            .app-logo {
+                width: 40px;
+                height: 40px;
+            }
 
             .header-actions {
                 width: 100%;
@@ -656,7 +678,7 @@
     <div class="modern-header">
         <div class="header-content">
             <div class="logo-section">
-                <h1><i class="fas fa-users-cog me-2"></i>Daftar Pejabat PTA Papua Barat</h1>
+                <h1><img src="{{ asset('logo.png') }}" alt="Logo PTA Papua Barat" class="app-logo">Daftar Pejabat PTA Papua Barat</h1>
                 <p>Status Kehadiran Real-time</p>
             </div>
             <div class="header-actions">
@@ -826,6 +848,8 @@
         let autoRefreshEnabled = true;
         let autoScrollEnabled = false;
         let scrollAnimation = null;
+        let scrollPauseTimer = null;
+        let scrollDirection = 'down';
 
         // Auto Refresh Status
         function refreshStatus() {
@@ -864,36 +888,58 @@
         function startContinuousScroll() {
             stopContinuousScroll();
 
-            const scrollSpeed = 3; // pixel per tick (lebih cepat)
-            const pauseAtBottom = 500; // jeda singkat sebelum kembali ke atas
-            const tickDelay = 14; // lebih rapat agar tidak tersendat
-            let loopTimeout = null;
+            const scrollDownSpeed = 3;
+            const scrollUpSpeed = 8;
+            const tickDelay = 14;
+            const pauseAtEdge = 650;
+            let isPaused = false;
+
+            function pauseThenContinue() {
+                isPaused = true;
+                clearTimeout(scrollPauseTimer);
+                scrollPauseTimer = setTimeout(function() {
+                    isPaused = false;
+                    if (autoScrollEnabled) scheduleNext();
+                }, pauseAtEdge);
+            }
 
             function scheduleNext(delay = tickDelay) {
-                loopTimeout = setTimeout(loop, delay);
-                scrollAnimation = loopTimeout;
+                scrollAnimation = setTimeout(loop, delay);
             }
 
             function loop() {
                 if (!autoScrollEnabled) return;
+                if (isPaused) return;
 
                 const scrollHeight = $(document).height();
                 const scrollPos = $(window).scrollTop();
                 const windowHeight = $(window).height();
+                const maxScroll = Math.max(scrollHeight - windowHeight, 0);
 
-                // Jika sudah di bawah, jeda sebentar lalu animasi ke atas dan lanjut
-                if (scrollPos + windowHeight >= scrollHeight - 10) {
-                    scheduleNext(pauseAtBottom);
-                    $('html, body').animate({ scrollTop: 0 }, 800, 'linear', function() {
-                        if (autoScrollEnabled) {
-                            scheduleNext();
-                        }
-                    });
+                if (maxScroll <= 0) {
+                    scheduleNext(1000);
                     return;
                 }
 
-                // Scroll ke bawah
-                window.scrollBy(0, scrollSpeed);
+                if (scrollDirection === 'down') {
+                    if (scrollPos >= maxScroll - 2) {
+                        scrollDirection = 'up';
+                        pauseThenContinue();
+                        return;
+                    }
+
+                    window.scrollTo(0, Math.min(scrollPos + scrollDownSpeed, maxScroll));
+                    scheduleNext();
+                    return;
+                }
+
+                if (scrollPos <= 2) {
+                    scrollDirection = 'down';
+                    pauseThenContinue();
+                    return;
+                }
+
+                window.scrollTo(0, Math.max(scrollPos - scrollUpSpeed, 0));
                 scheduleNext();
             }
 
@@ -904,6 +950,10 @@
             if (scrollAnimation) {
                 clearTimeout(scrollAnimation);
                 scrollAnimation = null;
+            }
+            if (scrollPauseTimer) {
+                clearTimeout(scrollPauseTimer);
+                scrollPauseTimer = null;
             }
             $('html, body').stop(true, false); // Stop jQuery animations
         }

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Buku Tamu Digital</title>
+    @include('partials.app-icons')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -73,6 +74,15 @@
         .btn-guest:hover {
             text-decoration: underline;
         }
+        .login-logo {
+            width: 86px;
+            height: 86px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.96);
+            padding: 8px;
+            box-shadow: 0 10px 28px rgba(0,0,0,0.25);
+        }
     </style>
 </head>
 <body>
@@ -81,7 +91,7 @@
             <div class="col-lg-5 col-md-7">
                 <div class="card login-card">
                     <div class="login-header">
-                        <i class="fas fa-user-shield fa-3x mb-3"></i>
+                        <img src="{{ asset('logo.png') }}" alt="Logo PTA Papua Barat" class="login-logo mb-3">
                         <h3 class="mb-0 fw-bold">Login Sistem</h3>
                         <p class="mb-0 mt-2">Buku Tamu Digital</p>
                     </div>
